@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "cfb-reference"
+version = "0.1.0"
+description = "Self-hosted sports statistics website using NCAA game saves"
+authors = ["Hans Missenheim <hansmissenheim@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.0"
+ncaadb = "^0.1.0"
+sqlmodel = "^0.0.19"
+uvicorn = {extras = ["standard"], version = "^0.30.1"}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+ruff = "^0.4.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

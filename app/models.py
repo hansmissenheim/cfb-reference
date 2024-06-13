@@ -14,3 +14,14 @@ class PlayerUpdate(Player):
     last_name: str | None = None
     position: int | None = None
     year: int | None = None
+
+
+class School(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    name: str
+    nickname: str
+
+
+class SchoolUpdate(School):
+    name: str | None = None
+    nickname: str | None = None

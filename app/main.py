@@ -64,3 +64,20 @@ def read_team(school_name: str, year: int):
 def read_players():
     with Session(engine) as session:
         return session.exec(select(Player)).all()
+
+
+@app.get("/players/{first_name}-{last_name}")
+def read_player(first_name: str, last_name: str):
+    first_name = first_name.title()
+    last_name = last_name.title()
+
+    with Session(engine) as session:
+        statement = (
+            select(Player)
+            .where(Player.first_name == first_name)
+            .where(Player.last_name == last_name)
+        )
+        player = session.exec(statement).first()
+        if player is None:
+            raise HTTPException(status_code=404, detail="Player not found")
+        return player

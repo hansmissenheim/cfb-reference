@@ -40,6 +40,26 @@ def read_teams():
         return session.exec(select(Team)).all()
 
 
+@app.get("/schools/{school_name}/{year}")
+def read_team(school_name: str, year: int):
+    name = school_name.title().replace("-", " ")
+
+    with Session(engine) as session:
+        statement = select(School).where(School.name == name)
+        school = session.exec(statement).first()
+        if school is None:
+            raise HTTPException(status_code=404, detail="School not found")
+        statement = (
+            select(Team)
+            .where(Team.school_id == school.id)
+            .where(Team.year == int(year))
+        )
+        team = session.exec(statement).first()
+        if team is None:
+            raise HTTPException(status_code=404, detail="Team not found")
+        return team
+
+
 @app.get("/players/")
 def read_players():
     with Session(engine) as session:

@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sqlmodel import Session, select
 
 from .database import create_db_and_tables, engine
@@ -21,6 +21,17 @@ app = FastAPI(lifespan=lifespan)
 def read_schools():
     with Session(engine) as session:
         return session.exec(select(School)).all()
+
+
+@app.get("/schools/{school_name}")
+def read_school(school_name: str):
+    name = school_name.title().replace("-", " ")
+    with Session(engine) as session:
+        statement = select(School).where(School.name == name)
+        school = session.exec(statement).first()
+        if school is None:
+            raise HTTPException(status_code=404, detail="School not found")
+        return school
 
 
 @app.get("/teams/")

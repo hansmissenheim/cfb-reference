@@ -1,5 +1,5 @@
 import ncaadb
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from .database import engine
 from .models import Player, School, Team
@@ -30,17 +30,24 @@ def load_schools(save_data):
 
 def load_players(save_data):
     player_data = save_data["PLAY"]
-    players = [
-        Player(
-            id=row.PGID,
-            first_name=row.PFNA,
-            last_name=row.PLNA,
-            position=row.PPOS,
-            year=row.PYEA,
-        )
-        for row in player_data.itertuples()
-    ]
+    seai_data = save_data["SEAI"]
+    year = 2023 + seai_data.at[0, "SSYE"]
 
     with Session(engine) as session:
-        session.add_all(players)
+        for row in player_data.itertuples():
+            team = session.exec(
+                select(Team)
+                .where(Team.school_id == row.TGID)
+                .where(Team.year == int(year))
+            ).first()
+
+            player = Player(
+                id=row.PGID,
+                first_name=row.PFNA,
+                last_name=row.PLNA,
+                position=row.PPOS,
+                year=row.PYEA,
+                teams=[team],
+            )
+            session.add(player)
         session.commit()

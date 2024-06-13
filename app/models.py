@@ -1,12 +1,23 @@
 from sqlmodel import Field, Relationship, SQLModel
 
 
+class PlayerTeamLink(SQLModel, table=True):
+    team_id: int | None = Field(default=None, foreign_key="team.id", primary_key=True)
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+
+
 class Player(SQLModel, table=True):
     id: int = Field(primary_key=True)
     first_name: str
     last_name: str
     position: int
     year: int
+
+    teams: list["Team"] = Relationship(
+        back_populates="players", link_model=PlayerTeamLink
+    )
 
 
 class School(SQLModel, table=True):
@@ -23,3 +34,6 @@ class Team(SQLModel, table=True):
 
     school_id: int | None = Field(default=None, foreign_key="school.id")
     school: School | None = Relationship(back_populates="teams")
+    players: list[Player] = Relationship(
+        back_populates="teams", link_model=PlayerTeamLink
+    )

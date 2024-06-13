@@ -8,8 +8,8 @@ from .save import load_players, load_schools, read_save
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     save_data = read_save()
-    load_players(save_data)
     load_schools(save_data)
+    load_players(save_data)
     yield
 
 

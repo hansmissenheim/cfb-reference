@@ -11,6 +11,18 @@ def read_save():
     return data
 
 
+def load_schools(save_data):
+    team_data = save_data["TEAM"]
+    schools = [
+        School(id=row.TGID, name=row.TDNA, nickname=row.TMNA)
+        for row in team_data.itertuples()
+    ]
+
+    with Session(engine) as session:
+        session.add_all(schools)
+        session.commit()
+
+
 def load_players(save_data):
     player_data = save_data["PLAY"]
     players = [
@@ -26,16 +38,4 @@ def load_players(save_data):
 
     with Session(engine) as session:
         session.add_all(players)
-        session.commit()
-
-
-def load_schools(save_data):
-    team_data = save_data["TEAM"]
-    schools = [
-        School(id=row.TGID, name=row.TDNA, nickname=row.TMNA)
-        for row in team_data.itertuples()
-    ]
-
-    with Session(engine) as session:
-        session.add_all(schools)
         session.commit()

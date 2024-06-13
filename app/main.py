@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from .database import create_db_and_tables
-from .models import Player, School
+from .models import Player, School, Team
 from .save import load_players, load_schools, read_save
 
 

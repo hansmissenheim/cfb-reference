@@ -14,8 +14,3 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
-
-@app.get("/")
-def index():
-    return {"message": "Hello, World!"}

@@ -17,13 +17,23 @@ class Player(SQLModel, table=True):
     year: int
 
     # Ratings attributes
-    tendency: int
-    discipline: int
-    importance: int
+    attributes: "PlayerAttributes" = Relationship(back_populates="player")
 
     teams: list["Team"] = Relationship(
         back_populates="players", link_model=PlayerTeamLink
     )
+
+
+class PlayerAttributes(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    PTEN: int
+    PPOE: int
+    PRNS: int
+    PLSY: int
+
+    player: Player = Relationship(back_populates="attributes")
 
 
 class School(SQLModel, table=True):

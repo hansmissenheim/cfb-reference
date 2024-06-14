@@ -53,7 +53,7 @@ def load_players(save_data):
 
             if player is None:
                 player = Player(
-                    id=row.PGID,
+                    player_game_id=row.PGID,
                     first_name=row.PFNA,
                     last_name=row.PLNA,
                     position=row.PPOS,

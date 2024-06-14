@@ -2,7 +2,7 @@ import ncaadb
 from sqlmodel import Session, select
 
 from .database import engine
-from .models import Player, School, Team
+from .models import Player, PlayerAttributes, School, Team
 
 
 def read_save():
@@ -49,28 +49,21 @@ def load_players(save_data):
                 select(Team).where(Team.school_id == row.TGID).where(Team.year == year)
             ).first()
 
-            player = session.exec(select(Player).where(Player.id == row.PGID)).first()
-
-            if player is None:
-                player = Player(
-                    player_game_id=row.PGID,
-                    first_name=row.PFNA,
-                    last_name=row.PLNA,
-                    position=row.PPOS,
-                    year=row.PYEA,
-                    tendency=row.PTEN,
-                    discipline=row.PDIS,
-                    importance=row.PIMP,
-                    teams=[team] if team is not None else [],
-                )
-                session.add(player)
-            else:
-                player.first_name = row.PFNA
-                player.last_name = row.PLNA
-                player.position = row.PPOS
-                player.year = row.PYEA
-
-                if team is not None and team not in player.teams:
-                    player.teams.append(team)
+            player = Player(
+                player_game_id=row.PGID,
+                first_name=row.PFNA,
+                last_name=row.PLNA,
+                position=row.PPOS,
+                year=row.PYEA,
+                attributes=PlayerAttributes(
+                    player_id=row.PGID,
+                    PTEN=row.PTEN,
+                    PPOE=row.PPOE,
+                    PRNS=row.PRNS,
+                    PLSY=row.PLSY,
+                ),
+                teams=[team] if team is not None else [],
+            )
+            session.add(player)
 
         session.commit()

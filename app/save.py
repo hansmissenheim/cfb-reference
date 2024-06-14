@@ -58,7 +58,7 @@ def load_players(save_data):
                     last_name=row.PLNA,
                     position=row.PPOS,
                     year=row.PYEA,
-                    teams=[team],
+                    teams=[team] if team is not None else [],
                 )
                 session.add(player)
             else:
@@ -67,7 +67,7 @@ def load_players(save_data):
                 player.position = row.PPOS
                 player.year = row.PYEA
 
-                if team not in player.teams:
+                if team is not None and team not in player.teams:
                     player.teams.append(team)
 
         session.commit()

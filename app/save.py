@@ -50,7 +50,7 @@ def load_players(save_data):
             ).first()
 
             player = Player(
-                player_game_id=row.PGID,
+                game_id=row.PGID,
                 first_name=row.PFNA,
                 last_name=row.PLNA,
                 position=row.PPOS,

@@ -10,7 +10,7 @@ class PlayerTeamLink(SQLModel, table=True):
 
 class Player(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    player_game_id: int
+    game_id: int
     first_name: str
     last_name: str
     position: int

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import select
 
-from .database import SessionDep, create_db_and_tables, engine
+from .database import SessionDep, create_db_and_tables
 from .models import Player, School, Team
 from .save import load_players, load_schools, read_save
 

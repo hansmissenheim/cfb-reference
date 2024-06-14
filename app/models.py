@@ -16,6 +16,11 @@ class Player(SQLModel, table=True):
     position: int
     year: int
 
+    # Ratings attributes
+    tendency: int
+    discipline: int
+    importance: int
+
     teams: list["Team"] = Relationship(
         back_populates="players", link_model=PlayerTeamLink
     )

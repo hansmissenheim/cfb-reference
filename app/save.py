@@ -49,21 +49,40 @@ def load_players(save_data):
                 select(Team).where(Team.school_id == row.TGID).where(Team.year == year)
             ).first()
 
-            player = Player(
-                game_id=row.PGID,
-                first_name=row.PFNA,
-                last_name=row.PLNA,
-                position=row.PPOS,
-                year=row.PYEA,
-                attributes=PlayerAttributes(
-                    player_id=row.PGID,
-                    PTEN=row.PTEN,
-                    PPOE=row.PPOE,
-                    PRNS=row.PRNS,
-                    PLSY=row.PLSY,
-                ),
-                teams=[team] if team is not None else [],
-            )
+            player = session.exec(
+                select(Player)
+                .join(PlayerAttributes, PlayerAttributes.player_id == Player.id)
+                .where(Player.game_id == row.PGID)
+                .where(PlayerAttributes.PTEN == row.PTEN)
+                .where(PlayerAttributes.PPOE == row.PPOE)
+                .where(PlayerAttributes.PRNS == row.PRNS)
+                .where(PlayerAttributes.PLSY == row.PLSY)
+            ).first()
+
+            if player is None:
+                player = Player(
+                    game_id=row.PGID,
+                    first_name=row.PFNA,
+                    last_name=row.PLNA,
+                    position=row.PPOS,
+                    year=row.PYEA,
+                    attributes=PlayerAttributes(
+                        player_id=row.PGID,
+                        PTEN=row.PTEN,
+                        PPOE=row.PPOE,
+                        PRNS=row.PRNS,
+                        PLSY=row.PLSY,
+                    ),
+                    teams=[team] if team is not None else [],
+                )
+            else:
+                player.first_name = row.PFNA
+                player.last_name = row.PLNA
+                player.position = row.PPOS
+                player.year = row.PYEA
+
+                if team is not None:
+                    player.teams.append(team)
             session.add(player)
 
         session.commit()

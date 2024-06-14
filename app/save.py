@@ -6,7 +6,7 @@ from .models import Player, School, Team
 
 
 def read_save():
-    with open("data/USR-DATA", "rb") as f:
+    with open("saves/Year_0-Week_18.USR-DATA", "rb") as f:
         data = ncaadb.read_db(f)
     return data
 

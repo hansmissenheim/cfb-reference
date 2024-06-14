@@ -58,6 +58,9 @@ def load_players(save_data):
                     last_name=row.PLNA,
                     position=row.PPOS,
                     year=row.PYEA,
+                    tendency=row.PTEN,
+                    discipline=row.PDIS,
+                    importance=row.PIMP,
                     teams=[team] if team is not None else [],
                 )
                 session.add(player)

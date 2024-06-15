@@ -3,7 +3,8 @@
 <div class="flex flex-col items-center justify-center gap-6 py-6">
     <div class="bg-white dark:bg-gray-950 p-8 rounded-lg shadow-lg w-full max-w-md min-h-[21rem]">
         <h1 class="text-2xl font-bold mb-4 text-gray-800">Upload Save File</h1>
-        <form id="form" class="space-y-4" hx-encoding="multipart/form-data" hx-post="/upload">
+        <form id="form" class="space-y-4" hx-encoding="multipart/form-data" hx-post="/upload" hx-trigger="submit"
+            hx-swap="innerHTML" hx-target="#server-response">
             <div class="flex items-center justify-center w-full">
                 <div class="flex items-center justify-center w-full">
                     <label for="file-upload"
@@ -30,6 +31,7 @@
                 Upload
             </button>
             <div id="error-message" class="hidden text-center text-red-500"></div>
+            <div id="server-response" class="hidden text-center text-red-500"></div>
         </form>
     </div>
 </div>
@@ -56,6 +58,7 @@
 
     const form = document.getElementById('form');
     const errorMessage = document.getElementById('error-message');
+    const serverResponse = document.getElementById('server-response');
 
     document.body.addEventListener('htmx:beforeRequest', function (event) {
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -63,7 +66,17 @@
             errorMessage.textContent = 'Please select a file before uploading.';
             errorMessage.classList.remove('hidden');
         } else {
+            serverResponse.classList.add('hidden');
             errorMessage.classList.add('hidden');
+        }
+    });
+
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        const errorMessage = document.getElementById('error-message');
+        if (errorMessage) {
+            serverResponse.classList.remove('hidden');
+        } else {
+            serverResponse.classList.add('hidden');
         }
     });
 </script>

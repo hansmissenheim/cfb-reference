@@ -1,3 +1,4 @@
+import ncaadb
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -20,4 +21,7 @@ def get_upload_form(request: Request):
 
 @router.post("/upload")
 def upload_file(save_file_upload: UploadFile):
-    return {"filename": save_file_upload.filename}
+    try:
+        ncaadb.read_db(save_file_upload.file)
+    except UnicodeDecodeError:
+        return HTMLResponse("Invalid file format. Please upload a NCAA 14 DB file.")

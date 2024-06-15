@@ -1,23 +1,28 @@
+from typing import BinaryIO
+
 import ncaadb
+import pandas as pd
 from sqlmodel import Session, select
 
-from .database import engine
-from .models import Player, PlayerAttributes, School, Team
+from app.database import engine
+from app.models import Player, PlayerAttributes, School, Team
 
 
-def read_save():
-    with open("saves/Year_0-Week_18.USR-DATA", "rb") as f:
-        data = ncaadb.read_db(f)
-    return data
+def load_save(save_file: BinaryIO) -> None:
+    save_data = ncaadb.read_db(save_file)
+    school_data, player_data = save_data["TEAM"], save_data["PLAY"]
+    if save_data["SEAI"] is None:
+        raise ValueError("Error. No SEAI data found in save file.")
+    else:
+        current_year = 2013 + int(save_data["SEAI"].at[0, "SSYE"])
+
+    load_schools(school_data, current_year)
+    load_players(player_data, current_year)
 
 
-def load_schools(save_data):
-    team_data = save_data["TEAM"]
-    seai_data = save_data["SEAI"]
-    year = 2023 + int(seai_data.at[0, "SSYE"])
-
+def load_schools(school_data: pd.DataFrame, year: int):
     with Session(engine) as session:
-        for row in team_data.itertuples():
+        for row in school_data.itertuples():
             school = session.exec(select(School).where(School.id == row.TGID)).first()
 
             if school is None:
@@ -38,11 +43,7 @@ def load_schools(save_data):
         session.commit()
 
 
-def load_players(save_data):
-    player_data = save_data["PLAY"]
-    seai_data = save_data["SEAI"]
-    year = 2023 + int(seai_data.at[0, "SSYE"])
-
+def load_players(player_data: pd.DataFrame, year: int):
     with Session(engine) as session:
         for row in player_data.itertuples():
             team = session.exec(
@@ -51,7 +52,7 @@ def load_players(save_data):
 
             player = session.exec(
                 select(Player)
-                .join(PlayerAttributes, PlayerAttributes.player_id == Player.id)
+                .join(PlayerAttributes, PlayerAttributes.player_id == Player.id)  # type: ignore
                 .where(Player.game_id == row.PGID)
                 .where(PlayerAttributes.PTEN == row.PTEN)
                 .where(PlayerAttributes.PPOE == row.PPOE)

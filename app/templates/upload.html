@@ -40,7 +40,6 @@
 
     fileInput.addEventListener('change', function () {
         if (this.files && this.files.length > 0) {
-            // Replace SVG
             uploadLabel.textContent = this.files[0].name;
             uploadIcon.outerHTML = `
             <svg id="upload-icon" class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
@@ -50,6 +49,15 @@
                 <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
                 <path d="M14 2v4a2 2 0 0 0 2 2h4" />
             </svg>`;
+        }
+    });
+
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit', function (event) {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            event.preventDefault();
+            alert('Please select a file before uploading.');
         }
     });
 </script>

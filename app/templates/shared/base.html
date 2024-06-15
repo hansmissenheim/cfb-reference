@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFB Reference</title>
+    <meta name="description" content="Self-hosted sports statistics website using NCAA game saves">
+    <link href="/static/css/main.css" rel="stylesheet">
+</head>
+
+<body class="min-h-screen w-full bg-gray-200">
+    {% block header %}
+    {% include "/shared/header.html" %}
+    {% endblock %}
+
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {% block footer %}
+    {% include "/shared/footer.html" %}
+    {% endblock %}
+</body>
+
+</html>

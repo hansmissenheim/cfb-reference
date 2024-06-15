@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlmodel import select
 
+from app.api.main import api_router
 from app.core.config import settings
 
 from .database import SessionDep, create_db_and_tables
@@ -22,6 +23,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
+
+app.include_router(api_router)
 
 
 @app.get("/schools/")

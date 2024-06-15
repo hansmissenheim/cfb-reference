@@ -11,8 +11,9 @@ package-mode = false
 python = "^3.12"
 fastapi = "^0.111.0"
 ncaadb = "^0.1.0"
+pytailwindcss = "^0.2.0"
 sqlmodel = "^0.0.19"
-uvicorn = {extras = ["standard"], version = "^0.30.1"}
+uvicorn = { extras = ["standard"], version = "^0.30.1" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"

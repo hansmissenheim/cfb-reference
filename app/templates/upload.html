@@ -57,7 +57,7 @@
     const form = document.getElementById('form');
     const errorMessage = document.getElementById('error-message');
 
-    form.addEventListener('submit', function (event) {
+    document.body.addEventListener('htmx:beforeRequest', function (event) {
         if (!fileInput.files || fileInput.files.length === 0) {
             event.preventDefault();
             errorMessage.textContent = 'Please select a file before uploading.';

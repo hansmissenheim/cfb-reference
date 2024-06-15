@@ -25,3 +25,4 @@ def upload_file(save_file_upload: UploadFile):
         ncaadb.read_db(save_file_upload.file)
     except UnicodeDecodeError:
         return HTMLResponse("Invalid file format. Please upload a NCAA 14 DB file.")
+    return {"status": "success"}

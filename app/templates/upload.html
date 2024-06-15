@@ -97,5 +97,12 @@
     document.body.addEventListener('htmx:afterSwap', function (event) {
         document.getElementById('spinner').classList.add('hidden');
     });
+
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        const response = JSON.parse(event.detail.xhr.response);
+        if (response.status === 'success') {
+            window.location.href = '/';
+        }
+    });
 </script>
 {% endblock %}

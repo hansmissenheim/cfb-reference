@@ -9,12 +9,12 @@
     <link href="/static/css/main.css" rel="stylesheet">
 </head>
 
-<body class="min-h-screen w-full bg-gray-200">
+<body class="flex flex-col min-h-screen w-full bg-gray-200">
     {% block header %}
     {% include "/shared/header.html" %}
     {% endblock %}
 
-    <div id="content">
+    <div id="content" class="flex-grow">
         {% block content %}
         {% endblock %}
     </div>

@@ -94,14 +94,17 @@
         document.getElementById('spinner').classList.remove('hidden');
     });
 
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        document.getElementById('spinner').classList.add('hidden');
-    });
 
     document.body.addEventListener('htmx:afterSwap', function (event) {
+        document.getElementById('spinner').classList.add('hidden');
         const response = JSON.parse(event.detail.xhr.response);
         if (response.status === 'success') {
-            window.location.href = '/';
+            serverResponse.textContent = 'File uploaded successfully!';
+            serverResponse.classList.remove('text-red-500');
+            serverResponse.classList.remove('hidden');
+            setTimeout(function () {
+                window.location.href = '/';
+            }, 1500); // wait for 1 second before redirecting
         }
     });
 </script>

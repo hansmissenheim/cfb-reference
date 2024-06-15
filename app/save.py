@@ -81,7 +81,7 @@ def load_players(save_data):
                 player.position = row.PPOS
                 player.year = row.PYEA
 
-                if team is not None:
+                if team is not None and team not in player.teams:
                     player.teams.append(team)
             session.add(player)
 

@@ -48,6 +48,10 @@
 
 <script>
     const fileInput = document.getElementById('file-upload');
+    const form = document.getElementById('form');
+    const errorMessage = document.getElementById('error-message');
+    const serverResponse = document.getElementById('server-response');
+    const spinner = document.getElementById('spinner');
     const uploadIcon = document.getElementById('upload-icon');
     const uploadLabel = document.querySelector('label[for="file-upload"] p');
 
@@ -66,9 +70,7 @@
         }
     });
 
-    const form = document.getElementById('form');
-    const errorMessage = document.getElementById('error-message');
-    const serverResponse = document.getElementById('server-response');
+
 
     document.body.addEventListener('htmx:beforeRequest', function (event) {
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -76,27 +78,24 @@
             errorMessage.textContent = 'Please select a file before uploading.';
             errorMessage.classList.remove('hidden');
         } else {
+            spinner.classList.remove('hidden');
             serverResponse.classList.add('hidden');
             errorMessage.classList.add('hidden');
         }
     });
 
     document.body.addEventListener('htmx:afterSwap', function (event) {
-        const errorMessage = document.getElementById('error-message');
+
+    });
+
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        spinner.classList.add('hidden');
         if (errorMessage) {
             serverResponse.classList.remove('hidden');
         } else {
             serverResponse.classList.add('hidden');
         }
-    });
 
-    document.body.addEventListener('htmx:beforeRequest', function (event) {
-        document.getElementById('spinner').classList.remove('hidden');
-    });
-
-
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        document.getElementById('spinner').classList.add('hidden');
         const response = JSON.parse(event.detail.xhr.response);
         if (response.status === 'success') {
             serverResponse.textContent = 'File uploaded successfully!';

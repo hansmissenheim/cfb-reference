@@ -1,8 +1,35 @@
 {% extends "/shared/base.html" %}
 {% block content %}
-<div class="container mx-auto flex-col py-6 gap-4">
-    <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Upload Save File</h1>
+<div class="container flex flex-col items-center py-6 gap-4">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-gray-800">Upload Save File</h1>
+        <form id="upload-form" class="space-y-4">
+            <div class="flex items-center justify-center w-full">
+                <div class="flex items-center justify-center w-full">
+                    <label for="file-upload"
+                        class="flex flex-col items-center justify-center w-full border border-gray-300  rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 duration-300">
+                        <div class="flex flex-col items-center justify-center p-6">
+                            <svg id="upload-icon" class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" x2="12" y1="3" y2="15" />
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">Drag and drop a file or click to
+                                upload</p>
+                        </div>
+                        <input id="file-upload" type="file" class="hidden" />
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-sky-800 hover:bg-sky-900 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300">
+                Upload
+            </button>
+        </form>
     </div>
 </div>
 {% endblock %}

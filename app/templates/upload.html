@@ -3,7 +3,7 @@
 <div class="container flex flex-col items-center py-6 gap-4">
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
         <h1 class="text-2xl font-bold mb-4 text-gray-800">Upload Save File</h1>
-        <form id="upload-form" class="space-y-4">
+        <form id="form" class="space-y-4" hx-encoding="multipart/form-data" hx-post="/upload">
             <div class="flex items-center justify-center w-full">
                 <div class="flex items-center justify-center w-full">
                     <label for="file-upload"
@@ -20,7 +20,7 @@
                             <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">Drag and drop a file or click to
                                 upload</p>
                         </div>
-                        <input id="file-upload" type="file" class="hidden" />
+                        <input id="file-upload" type="file" class="hidden" name="save_file_upload" />
                     </label>
                 </div>
             </div>

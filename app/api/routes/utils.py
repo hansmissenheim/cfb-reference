@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.core.config import settings
+from app.load.main import load_save
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
@@ -16,3 +17,12 @@ def index(request: Request):
 @router.get("/upload", response_class=HTMLResponse)
 def get_upload_form(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request})
+
+
+@router.post("/upload")
+def upload_file(save_file_upload: UploadFile):
+    try:
+        load_save(save_file_upload.file)
+    except UnicodeDecodeError:
+        return HTMLResponse("Invalid file format. Please upload a NCAA 14 DB file.")
+    return {"status": "success"}

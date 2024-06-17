@@ -62,9 +62,7 @@ def load_players(player_dicts: list[dict], year: int):
         for player_dict in player_dicts:
             player_in = Player(
                 **player_dict,
-                attributes=PlayerAttributes(
-                    **player_dict, player_id=player_dict.get("PGID")
-                ),
+                attributes=PlayerAttributes(**player_dict),
                 teams=[],
             )
 

@@ -79,9 +79,10 @@ def load_players(player_dicts: list[dict], year: int):
             ).first()
 
             if player:
-                update_dict = player_in.model_dump(exclude={"id", "teams"})
+                update_dict = player_in.model_dump(exclude={"id", "teams", "url_name"})
                 player.sqlmodel_update(update_dict)
             else:
+                player_in.url_name = url_from_name(session, player_dict)
                 player = player_in
 
             team = session.exec(

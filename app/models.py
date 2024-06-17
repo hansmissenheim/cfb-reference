@@ -10,11 +10,11 @@ class PlayerTeamLink(SQLModel, table=True):
 
 class Player(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    game_id: int
-    first_name: str
-    last_name: str
-    position: int
-    year: int
+    game_id: int = Field(alias="PGID")
+    first_name: str = Field(alias="PFNA")
+    last_name: str = Field(alias="PLNA")
+    position: int = Field(alias="PPOS")
+    year: int = Field(alias="PYEA")
 
     # Ratings attributes
     attributes: "PlayerAttributes" = Relationship(back_populates="player")
@@ -37,9 +37,9 @@ class PlayerAttributes(SQLModel, table=True):
 
 
 class School(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    name: str
-    nickname: str
+    id: int = Field(alias="TGID", primary_key=True)
+    name: str = Field(alias="TDNA")
+    nickname: str = Field(alias="TMNA")
 
     teams: list["Team"] = Relationship(back_populates="school")
 

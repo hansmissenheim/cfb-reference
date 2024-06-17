@@ -15,6 +15,7 @@ class Player(SQLModel, table=True):
     last_name: str = Field(alias="PLNA")
     position: int = Field(alias="PPOS")
     year: int = Field(alias="PYEA")
+    url_name: str = Field(default="", unique=True)
 
     # Ratings attributes
     attributes: "PlayerAttributes" = Relationship(back_populates="player")

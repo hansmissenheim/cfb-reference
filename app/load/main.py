@@ -1,3 +1,4 @@
+import re
 from typing import BinaryIO
 
 import ncaadb
@@ -43,6 +44,17 @@ def load_schools(school_dicts: list[dict], year: int):
                 session.add(team)
 
         session.commit()
+
+
+def url_from_name(session: Session, player_dict: dict) -> str:
+    first_name, last_name = player_dict.get("PFNA", ""), player_dict.get("PLNA", "")
+    url_name = f"{first_name}-{last_name}".replace(" ", "-").lower()
+    url_name = re.sub(r"[^a-z-]", "", url_name)
+
+    urls = session.exec(
+        select(Player.url_name).where(Player.url_name.startswith(url_name))
+    ).all()
+    return f"{url_name}-{len(urls) + 1}"
 
 
 def load_players(player_dicts: list[dict], year: int):

@@ -1,7 +1,6 @@
 from typing import BinaryIO
 
 import ncaadb
-import pandas as pd
 from sqlmodel import Session, select
 
 from app.database import engine
@@ -11,14 +10,14 @@ from app.models import Player, PlayerAttributes, School, Team
 def load_save(save_file: BinaryIO) -> None:
     save_data = ncaadb.read_db(save_file)
     school_dicts = save_data["TEAM"].to_dict(orient="records")
-    player_data = save_data["PLAY"]
+    player_dicts = save_data["PLAY"].to_dict(orient="records")
     if save_data["SEAI"] is None:
         raise ValueError("Error. No SEAI data found in save file.")
     else:
         current_year = 2013 + int(save_data["SEAI"].at[0, "SSYE"])
 
     load_schools(school_dicts, current_year)
-    load_players(player_data, current_year)
+    load_players(player_dicts, current_year)
 
 
 def load_schools(school_dicts: list[dict], year: int):
@@ -46,47 +45,41 @@ def load_schools(school_dicts: list[dict], year: int):
         session.commit()
 
 
-def load_players(player_data: pd.DataFrame, year: int):
+def load_players(player_dicts: list[dict], year: int):
     with Session(engine) as session:
-        for row in player_data.itertuples():
-            team = session.exec(
-                select(Team).where(Team.school_id == row.TGID).where(Team.year == year)
-            ).first()
+        for player_dict in player_dicts:
+            player_in = Player(
+                **player_dict,
+                attributes=PlayerAttributes(
+                    **player_dict, player_id=player_dict.get("PGID")
+                ),
+                teams=[],
+            )
 
             player = session.exec(
                 select(Player)
                 .join(PlayerAttributes, PlayerAttributes.player_id == Player.id)  # type: ignore
-                .where(Player.game_id == row.PGID)
-                .where(PlayerAttributes.PTEN == row.PTEN)
-                .where(PlayerAttributes.PPOE == row.PPOE)
-                .where(PlayerAttributes.PRNS == row.PRNS)
-                .where(PlayerAttributes.PLSY == row.PLSY)
+                .where(Player.game_id == player_in.game_id)
+                .where(PlayerAttributes.PTEN == player_in.attributes.PTEN)
+                .where(PlayerAttributes.PPOE == player_in.attributes.PPOE)
+                .where(PlayerAttributes.PRNS == player_in.attributes.PRNS)
+                .where(PlayerAttributes.PLSY == player_in.attributes.PLSY)
             ).first()
 
-            if player is None:
-                player = Player(
-                    game_id=row.PGID,
-                    first_name=row.PFNA,
-                    last_name=row.PLNA,
-                    position=row.PPOS,
-                    year=row.PYEA,
-                    attributes=PlayerAttributes(
-                        player_id=row.PGID,
-                        PTEN=row.PTEN,
-                        PPOE=row.PPOE,
-                        PRNS=row.PRNS,
-                        PLSY=row.PLSY,
-                    ),
-                    teams=[team] if team is not None else [],
-                )
+            if player:
+                update_dict = player_in.model_dump(exclude={"id", "teams"})
+                player.sqlmodel_update(update_dict)
             else:
-                player.first_name = row.PFNA
-                player.last_name = row.PLNA
-                player.position = row.PPOS
-                player.year = row.PYEA
+                player = player_in
 
-                if team is not None and team not in player.teams:
-                    player.teams.append(team)
+            team = session.exec(
+                select(Team)
+                .where(Team.school_id == player_dict.get("TGID"))
+                .where(Team.year == year)
+            ).first()
+
+            if team is not None and team not in player.teams:
+                player.teams.append(team)
             session.add(player)
 
         session.commit()

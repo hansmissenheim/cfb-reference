@@ -10,34 +10,37 @@ from app.models import Player, PlayerAttributes, School, Team
 
 def load_save(save_file: BinaryIO) -> None:
     save_data = ncaadb.read_db(save_file)
-    school_data, player_data = save_data["TEAM"], save_data["PLAY"]
+    school_dicts = save_data["TEAM"].to_dict(orient="records")
+    player_data = save_data["PLAY"]
     if save_data["SEAI"] is None:
         raise ValueError("Error. No SEAI data found in save file.")
     else:
         current_year = 2013 + int(save_data["SEAI"].at[0, "SSYE"])
 
-    load_schools(school_data, current_year)
+    load_schools(school_dicts, current_year)
     load_players(player_data, current_year)
 
 
-def load_schools(school_data: pd.DataFrame, year: int):
+def load_schools(school_dicts: list[dict], year: int):
     with Session(engine) as session:
-        for row in school_data.itertuples():
-            school = session.exec(select(School).where(School.id == row.TGID)).first()
+        for school_dict in school_dicts:
+            school_id = school_dict.get("TGID")
+            school_in = School(**school_dict)
 
-            if school is None:
-                school = School(id=row.TGID, name=row.TDNA, nickname=row.TMNA)
+            school = session.get(School, school_id)
+            if school:
+                update_dict = school_in.model_dump()
+                school.sqlmodel_update(update_dict)
                 session.add(school)
             else:
-                school.name = row.TDNA
-                school.nickname = row.TMNA
+                session.add(school_in)
 
             team = session.exec(
-                select(Team).where(Team.school_id == row.TGID).where(Team.year == year)
+                select(Team).where(Team.school_id == school_id).where(Team.year == year)
             ).first()
 
             if team is None:
-                team = Team(year=year, school_id=row.TGID)
+                team = Team(school_id=school_id, year=year)
                 session.add(team)
 
         session.commit()

@@ -1,3 +1,4 @@
+import re
 from typing import BinaryIO
 
 import ncaadb
@@ -45,14 +46,23 @@ def load_schools(school_dicts: list[dict], year: int):
         session.commit()
 
 
+def url_from_name(session: Session, player_dict: dict) -> str:
+    first_name, last_name = player_dict.get("PFNA", ""), player_dict.get("PLNA", "")
+    url_name = f"{first_name}-{last_name}".replace(" ", "-").lower()
+    url_name = re.sub(r"[^a-z-]", "", url_name)
+
+    urls = session.exec(
+        select(Player.url_name).where(Player.url_name.startswith(url_name))
+    ).all()
+    return f"{url_name}-{len(urls) + 1}"
+
+
 def load_players(player_dicts: list[dict], year: int):
     with Session(engine) as session:
         for player_dict in player_dicts:
             player_in = Player(
                 **player_dict,
-                attributes=PlayerAttributes(
-                    **player_dict, player_id=player_dict.get("PGID")
-                ),
+                attributes=PlayerAttributes(**player_dict),
                 teams=[],
             )
 
@@ -67,9 +77,10 @@ def load_players(player_dicts: list[dict], year: int):
             ).first()
 
             if player:
-                update_dict = player_in.model_dump(exclude={"id", "teams"})
+                update_dict = player_in.model_dump(exclude={"id", "teams", "url_name"})
                 player.sqlmodel_update(update_dict)
             else:
+                player_in.url_name = url_from_name(session, player_dict)
                 player = player_in
 
             team = session.exec(

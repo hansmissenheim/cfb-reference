@@ -15,6 +15,7 @@ class Player(SQLModel, table=True):
     last_name: str = Field(alias="PLNA")
     position: int = Field(alias="PPOS")
     year: int = Field(alias="PYEA")
+    url_name: str = Field(default="", unique=True)
 
     # Ratings attributes
     attributes: "PlayerAttributes" = Relationship(back_populates="player")
@@ -26,7 +27,7 @@ class Player(SQLModel, table=True):
 
 class PlayerAttributes(SQLModel, table=True):
     player_id: int | None = Field(
-        default=None, foreign_key="player.id", primary_key=True
+        alias="PGID", default=None, foreign_key="player.id", primary_key=True
     )
     PTEN: int
     PPOE: int

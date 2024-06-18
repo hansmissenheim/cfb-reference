@@ -1,5 +1,7 @@
 from sqlmodel import Field, Relationship, SQLModel
 
+from app.mapping import STATES
+
 
 class PlayerSchoolLink(SQLModel, table=True):
     player_id: int | None = Field(
@@ -56,6 +58,10 @@ class Stadium(SQLModel, table=True):
     state_id: int = Field(alias="STAT")
     nickname: str = Field(alias="STNN", default="")
     capcity: int = Field(alias="SCAP")
+
+    @property
+    def state(self) -> str:
+        return STATES[self.state_id]
 
 
 class School(SQLModel, table=True):

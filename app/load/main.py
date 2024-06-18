@@ -21,12 +21,19 @@ def load_save(save_file: BinaryIO) -> None:
     load_players(player_dicts, current_year)
 
 
+def school_url_slug(school_dict: dict) -> str:
+    name = school_dict.get("TDNA", "")
+    url_slug = name.replace(" ", "-").lower()
+    return re.sub(r"[^a-z-]", "", url_slug)
+
+
 def load_schools(school_dicts: list[dict], year: int):
     with Session(engine) as session:
         for school_dict in school_dicts:
-            school_id = school_dict.get("TGID")
+            school_dict["url_slug"] = school_url_slug(school_dict)
             school_in = School(**school_dict)
 
+            school_id = school_dict.get("TGID")
             school = session.get(School, school_id)
             if school:
                 update_dict = school_in.model_dump()

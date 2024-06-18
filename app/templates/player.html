@@ -11,11 +11,12 @@
                 </p>
                 {% if player.schools|length == 1 %}
                 {% set school = player.schools[0] %}
-                <p><span class="font-bold">School</span>: <a href="/schools/{{ school.url_slug }}">{{ school.name }}</a>
+                <p><span class="font-bold">School</span>: <a href="/schools/{{ school.url_slug }}"
+                        class="text-blue-600">{{ school.name }}</a>
                     {% elif player.schools|length > 1 %}
                 <p><span class="font-bold">Schools</span>:
                     {% for school in player.schools %}
-                    <a href="/schools/{{ school.url_slug }}" class="text-blue-500">{{ school.name }}</a>{% if not
+                    <a href="/schools/{{ school.url_slug }}" class="text-blue-600">{{ school.name }}</a>{% if not
                     loop.last %},{% endif %}
                     {% endfor %}
                     {% endif %}

@@ -25,7 +25,12 @@ class Player(SQLModel, table=True):
     first_name: str = Field(alias="PFNA")
     last_name: str = Field(alias="PLNA")
     position_id: int = Field(alias="PPOS")
+    height: int = Field(alias="PHGT")
+    weight: int = Field(alias="PWGT")
+    face_id: int = Field(alias="PGHE")
+    jersey_number: int = Field(alias="PJEN")
     year: int = Field(alias="PYEA")
+    hometown: int = Field(alias="RCHD")
     url_slug: str = Field(default="", unique=True)
 
     # Ratings attributes

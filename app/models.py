@@ -85,7 +85,7 @@ class Stadium(SQLModel, table=True):
     city: str = Field(alias="SCIT")
     state_id: int = Field(alias="STAT")
     nickname: str = Field(alias="STNN", default="")
-    capcity: int = Field(alias="SCAP")
+    capacity: int = Field(alias="SCAP")
 
     @property
     def state(self) -> str:

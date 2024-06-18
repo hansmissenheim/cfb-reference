@@ -73,6 +73,14 @@ class School(SQLModel, table=True):
     teams: list["Team"] = Relationship(back_populates="school")
 
 
+class Coach(SQLModel, table=True):
+    id: int = Field(alias="CCID", primary_key=True)
+    first_name: str = Field(alias="CFNM")
+    last_name: str = Field(alias="CLNM")
+    age: int = Field(alias="CAGE")
+    position: int = Field(alias="COPS")
+
+
 class Team(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     year: int

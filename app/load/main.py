@@ -46,15 +46,15 @@ def load_schools(school_dicts: list[dict], year: int):
         session.commit()
 
 
-def url_from_name(session: Session, player_dict: dict) -> str:
+def player_url_slug(session: Session, player_dict: dict) -> str:
     first_name, last_name = player_dict.get("PFNA", ""), player_dict.get("PLNA", "")
-    url_name = f"{first_name}-{last_name}".replace(" ", "-").lower()
-    url_name = re.sub(r"[^a-z-]", "", url_name)
+    url_slug = f"{first_name}-{last_name}".replace(" ", "-").lower()
+    url_slug = re.sub(r"[^a-z-]", "", url_slug)
 
     urls = session.exec(
-        select(Player.url_name).where(Player.url_name.startswith(url_name))
+        select(Player.url_slug).where(Player.url_slug.startswith(url_slug))
     ).all()
-    return f"{url_name}-{len(urls) + 1}"
+    return f"{url_slug}-{len(urls) + 1}"
 
 
 def load_players(player_dicts: list[dict], year: int):
@@ -75,11 +75,11 @@ def load_players(player_dicts: list[dict], year: int):
 
             if player:
                 update_dict = player_in.model_dump(
-                    exclude={"id", "schools", "teams", "url_name"}
+                    exclude={"id", "schools", "teams", "url_slug"}
                 )
                 player.sqlmodel_update(update_dict)
             else:
-                player_in.url_name = url_from_name(session, player_dict)
+                player_in.url_slug = player_url_slug(session, player_dict)
                 player = player_in
 
             session.add(player)

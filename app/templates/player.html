@@ -2,7 +2,8 @@
 {% block content %}
 <div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <div class="flex items-center">
+        <div class="flex items-start space-x-4">
+            <img src="/static/img/faces/256/face{{ player.face_id }}.webp" class="w-128 h-128">
             <div>
                 <p class="text-2xl font-bold">{{ player.first_name }} {{player.last_name }}</p>
                 <p><span class="font-bold">Position</span>: {{ player.position }}</p>

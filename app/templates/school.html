@@ -2,7 +2,14 @@
 {% block content %}
 <div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">School Name History</h1>
+        <div class="flex items-start space-x-4">
+            <div class="flex-grow">
+                <p class="text-2xl font-bold">{{ school.name }} {{school.nickname }} School History</p>
+                <p><span class="font-bold">Stadium</span>: {{ school.stadium.name }} (cap. {{ school.stadium.capacity
+                    }})</p>
+                <p><span class="font-bold">Location</span>: {{ school.stadium.city }}, {{ school.stadium.state }}</p>
+            </div>
+        </div>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Results by Year</h1>

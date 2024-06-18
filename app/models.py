@@ -49,6 +49,15 @@ class PlayerAttributes(SQLModel, table=True):
     player: Player = Relationship(back_populates="attributes")
 
 
+class Stadium(SQLModel, table=True):
+    id: int = Field(alias="SGID", primary_key=True)
+    name: str = Field(alias="SNAM")
+    city: str = Field(alias="SCIT")
+    state_id: int = Field(alias="STAT")
+    nickname: str = Field(alias="STNN", default="")
+    capcity: int = Field(alias="SCAP")
+
+
 class School(SQLModel, table=True):
     id: int = Field(alias="TGID", primary_key=True)
     name: str = Field(alias="TDNA")

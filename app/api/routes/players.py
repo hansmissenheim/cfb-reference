@@ -11,10 +11,10 @@ router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
 
 
-@router.get("/{url_name}", response_class=HTMLResponse)
-def player(request: Request, url_name: str, session: SessionDep):
+@router.get("/{player_slug}", response_class=HTMLResponse)
+def player(request: Request, player_slug: str, session: SessionDep):
     player = session.exec(
-        select(Player).where(Player.url_name == url_name)
+        select(Player).where(Player.url_slug == player_slug)
     ).one_or_none()
     if player is None:
         raise HTTPException(status_code=404, detail="Player not found")

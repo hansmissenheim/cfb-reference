@@ -1,6 +1,6 @@
 from sqlmodel import Field, Relationship, SQLModel
 
-from app.mapping import STATES
+from app.mapping import POSITIONS, STATES
 
 
 class PlayerSchoolLink(SQLModel, table=True):
@@ -24,19 +24,22 @@ class Player(SQLModel, table=True):
     game_id: int = Field(alias="POID")
     first_name: str = Field(alias="PFNA")
     last_name: str = Field(alias="PLNA")
-    position: int = Field(alias="PPOS")
+    position_id: int = Field(alias="PPOS")
     year: int = Field(alias="PYEA")
     url_slug: str = Field(default="", unique=True)
 
     # Ratings attributes
     attributes: "PlayerAttributes" = Relationship(back_populates="player")
-
     schools: list["School"] = Relationship(
         back_populates=None, link_model=PlayerSchoolLink
     )
     teams: list["Team"] = Relationship(
         back_populates="players", link_model=PlayerTeamLink
     )
+
+    @property
+    def position(self) -> str:
+        return POSITIONS[self.position_id]
 
 
 class PlayerAttributes(SQLModel, table=True):

@@ -50,6 +50,22 @@ class Player(SQLModel, table=True):
     def position(self) -> str:
         return POSITIONS[self.position_id]
 
+    @property
+    def height_ft(self) -> str:
+        return f"{self.height // 12}-{self.height % 12}"
+
+    @property
+    def height_cm(self) -> int:
+        return round(self.height * 2.54)
+
+    @property
+    def weight_lbs(self) -> int:
+        return self.weight + 160
+
+    @property
+    def weight_kg(self) -> int:
+        return round((self.weight + 160) * 0.45359237)
+
 
 class PlayerAttributes(SQLModel, table=True):
     player_id: int | None = Field(

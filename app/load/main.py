@@ -5,11 +5,12 @@ import ncaadb
 from sqlmodel import Session, select
 
 from app.database import engine
-from app.models import Player, PlayerAttributes, School, Stadium, Team
+from app.models import Coach, Player, PlayerAttributes, School, Stadium, Team
 
 
 def load_save(save_file: BinaryIO) -> None:
     save_data = ncaadb.read_db(save_file)
+    coach_dicts = save_data["COCH"].to_dict(orient="records")
     player_dicts = save_data["PLAY"].to_dict(orient="records")
     school_dicts = save_data["TEAM"].to_dict(orient="records")
     stadium_dicts = save_data["STAD"].to_dict(orient="records")
@@ -21,6 +22,7 @@ def load_save(save_file: BinaryIO) -> None:
     load_stadiums(stadium_dicts)
     load_schools(school_dicts, current_year)
     load_players(player_dicts, current_year)
+    load_coaches(coach_dicts, current_year)
 
 
 def load_stadiums(stadium_dicts: list[dict]):
@@ -67,6 +69,35 @@ def load_schools(school_dicts: list[dict], year: int):
             if team is None:
                 team = Team(school_id=school_id, year=year)
                 session.add(team)
+
+        session.commit()
+
+
+def load_coaches(coach_dicts: list[dict], year: int):
+    with Session(engine) as session:
+        for coach_dict in coach_dicts:
+            coach_in = Coach(**coach_dict)
+
+            coach = session.get(Coach, coach_dict.get("CCID"))
+            if coach:
+                update_dict = coach_in.model_dump()
+                coach.sqlmodel_update(update_dict)
+            else:
+                coach = coach_in
+
+            session.add(coach)
+
+            # Only add coach to team if they are the head coach
+            if coach.position > 0:
+                continue
+            team = session.exec(
+                select(Team)
+                .where(Team.school_id == coach_dict.get("TGID"))
+                .where(Team.year == year)
+            ).first()
+
+            if team is not None and team not in coach.teams:
+                coach.teams.append(team)
 
         session.commit()
 

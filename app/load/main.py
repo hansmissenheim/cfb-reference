@@ -60,11 +60,8 @@ def url_from_name(session: Session, player_dict: dict) -> str:
 def load_players(player_dicts: list[dict], year: int):
     with Session(engine) as session:
         for player_dict in player_dicts:
-            player_in = Player(
-                **player_dict,
-                attributes=PlayerAttributes(**player_dict),
-                teams=[],
-            )
+            player_dict["attributes"] = PlayerAttributes(**player_dict)
+            player_in = Player(**player_dict)
 
             player = session.exec(
                 select(Player)
@@ -77,11 +74,15 @@ def load_players(player_dicts: list[dict], year: int):
             ).first()
 
             if player:
-                update_dict = player_in.model_dump(exclude={"id", "teams", "url_name"})
+                update_dict = player_in.model_dump(
+                    exclude={"id", "schools", "teams", "url_name"}
+                )
                 player.sqlmodel_update(update_dict)
             else:
                 player_in.url_name = url_from_name(session, player_dict)
                 player = player_in
+
+            session.add(player)
 
             team = session.exec(
                 select(Team)
@@ -91,6 +92,7 @@ def load_players(player_dicts: list[dict], year: int):
 
             if team is not None and team not in player.teams:
                 player.teams.append(team)
-            session.add(player)
+                if team.school is not None and team.school not in player.schools:
+                    player.schools.append(team.school)
 
         session.commit()

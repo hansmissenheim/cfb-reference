@@ -1,11 +1,20 @@
 from sqlmodel import Field, Relationship, SQLModel
 
 
-class PlayerTeamLink(SQLModel, table=True):
-    team_id: int | None = Field(default=None, foreign_key="team.id", primary_key=True)
+class PlayerSchoolLink(SQLModel, table=True):
     player_id: int | None = Field(
         default=None, foreign_key="player.id", primary_key=True
     )
+    school_id: int | None = Field(
+        default=None, foreign_key="school.id", primary_key=True
+    )
+
+
+class PlayerTeamLink(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    team_id: int | None = Field(default=None, foreign_key="team.id", primary_key=True)
 
 
 class Player(SQLModel, table=True):
@@ -20,6 +29,9 @@ class Player(SQLModel, table=True):
     # Ratings attributes
     attributes: "PlayerAttributes" = Relationship(back_populates="player")
 
+    schools: list["School"] = Relationship(
+        back_populates=None, link_model=PlayerSchoolLink
+    )
     teams: list["Team"] = Relationship(
         back_populates="players", link_model=PlayerTeamLink
     )

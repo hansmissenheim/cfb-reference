@@ -97,6 +97,7 @@ class School(SQLModel, table=True):
     name: str = Field(alias="TDNA")
     nickname: str = Field(alias="TMNA")
     url_slug: str = Field(default="", unique=True)
+    logo_id: int = Field(alias="TLGL")
     stadium_id: int = Field(alias="SGID", foreign_key="stadium.id")
 
     stadium: Stadium = Relationship()

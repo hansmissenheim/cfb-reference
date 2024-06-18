@@ -69,7 +69,9 @@ class School(SQLModel, table=True):
     name: str = Field(alias="TDNA")
     nickname: str = Field(alias="TMNA")
     url_slug: str = Field(default="", unique=True)
+    stadium_id: int = Field(alias="SGID", foreign_key="stadium.id")
 
+    stadium: Stadium = Relationship()
     teams: list["Team"] = Relationship(back_populates="school")
 
 

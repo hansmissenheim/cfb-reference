@@ -5,20 +5,38 @@ import ncaadb
 from sqlmodel import Session, select
 
 from app.database import engine
-from app.models import Player, PlayerAttributes, School, Team
+from app.models import Player, PlayerAttributes, School, Stadium, Team
 
 
 def load_save(save_file: BinaryIO) -> None:
     save_data = ncaadb.read_db(save_file)
-    school_dicts = save_data["TEAM"].to_dict(orient="records")
     player_dicts = save_data["PLAY"].to_dict(orient="records")
+    school_dicts = save_data["TEAM"].to_dict(orient="records")
+    stadium_dicts = save_data["STAD"].to_dict(orient="records")
     if save_data["SEAI"] is None:
         raise ValueError("Error. No SEAI data found in save file.")
     else:
         current_year = 2013 + int(save_data["SEAI"].at[0, "SSYE"])
 
+    load_stadiums(stadium_dicts)
     load_schools(school_dicts, current_year)
     load_players(player_dicts, current_year)
+
+
+def load_stadiums(stadium_dicts: list[dict]):
+    with Session(engine) as session:
+        for stadium_dict in stadium_dicts:
+            stadium_in = Stadium(**stadium_dict)
+
+            stadium = session.get(Stadium, stadium_dict.get("SGID"))
+            if stadium:
+                update_dict = stadium_in.model_dump()
+                stadium.sqlmodel_update(update_dict)
+                session.add(stadium)
+            else:
+                session.add(stadium_in)
+
+        session.commit()
 
 
 def school_url_slug(school_dict: dict) -> str:

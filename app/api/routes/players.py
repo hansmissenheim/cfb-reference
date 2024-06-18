@@ -1,16 +1,25 @@
-from fastapi import APIRouter, Path, Request
+from fastapi import APIRouter, HTTPException, Path, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from sqlmodel import select
 
 from app.core.config import settings
+from app.database import SessionDep
+from app.models import Player
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
 
 
-@router.get("/{first_name}-{last_name}", response_class=HTMLResponse)
-def player(request: Request, first_name: str, last_name: str):
-    return templates.TemplateResponse("player.html", {"request": request})
+@router.get("/{url_name}", response_class=HTMLResponse)
+def player(request: Request, url_name: str, session: SessionDep):
+    player = session.exec(
+        select(Player).where(Player.url_name == url_name)
+    ).one_or_none()
+    if player is None:
+        raise HTTPException(status_code=404, detail="Player not found")
+    context = {"request": request, "player": player}
+    return templates.TemplateResponse("player.html", context)
 
 
 @router.get("/", response_class=HTMLResponse)

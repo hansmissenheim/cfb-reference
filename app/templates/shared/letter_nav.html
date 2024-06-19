@@ -1,0 +1,6 @@
+<div class=" w-full p-6 bg-white rounded-lg shadow-lg flex flex-wrap justify-between">
+    {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+    <button class="btn min-w-8 text-2xl text-blue-600 text-underline p-1" hx-get="/players/letter/{{ letter }}"
+        hx-target="#content" hx-push-url="true">{{ letter }}</button>
+    {% endfor %}
+</div>

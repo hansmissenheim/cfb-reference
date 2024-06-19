@@ -1,16 +1,12 @@
 {% extends "/shared/base.html" %}
 {% block content %}
 <div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
-    <div class=" w-full p-6 bg-white rounded-lg shadow-lg flex flex-wrap justify-between">
-        {% for letter in players.keys() %}
-        <button class="btn min-w-8 text-2xl text-blue-600 text-underline p-1">{{ letter }}</button>
-        {% endfor %}
-    </div>
+    {% include '/shared/letter_nav.html' %}
     <div id="letterCards"
-        class="container m-auto py-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        class="container m-auto py-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {% for letter, players in players.items() %}
         <div class="w-full pb-6 px-6 bg-white rounded-lg shadow-lg">
-            <h1 class="text-4xl font-bold mb-4 font-bold text-gray-800 pt-4 pb-2">{{ letter }}</h1>
+            <h1 class="text-4xl font-bold mb-4 font-bold text-gray-800 pt-4">{{ letter }}</h1>
             <ul>
                 {% for player in players %}
                 <li>

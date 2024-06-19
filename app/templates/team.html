@@ -2,7 +2,14 @@
 {% block content %}
 <div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">(Year) (Team Name) Stats</h1>
+        <div class="flex items-start space-x-4">
+            <img src="/static/img/logos/128/logo{{ team.school.logo_id }}.webp" class="w-128 h-128">
+            <div class="flex-grow">
+                <p class="text-2xl font-bold">{{ team.year }} {{ team.school.name }} {{ team.school.nickname }} Stats
+                </p>
+                <p><span class="font-bold">Coach</span>: {{ team.coach.first_name }} {{ team.coach.last_name }}</p>
+            </div>
+        </div>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Team Stats</h1>

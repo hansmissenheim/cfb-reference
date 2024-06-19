@@ -2,7 +2,51 @@
 {% block content %}
 <div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Player Name</h1>
+        <div class="flex items-start space-x-4">
+            <img src="/static/img/faces/256/face{{ player.face_id }}.webp" class="w-128 h-128">
+            <div class="flex-grow">
+                <p class="text-2xl font-bold">{{ player.first_name }} {{player.last_name }}</p>
+                <p><span class="font-bold">Position</span>: {{ player.position }}</p>
+                <p>{{ player.height_ft }}, {{ player.weight_lbs }}lb ({{ player.height_cm }}cm, {{ player.weight_kg}}kg)
+                </p>
+                {% if player.schools|length == 1 %}
+                {% set school = player.schools[0] %}
+                <p><span class="font-bold">School</span>: <a href="/schools/{{ school.url_slug }}"
+                        class="text-blue-600">{{ school.name }}</a>
+                    {% elif player.schools|length > 1 %}
+                <p><span class="font-bold">Schools</span>:
+                    {% for school in player.schools %}
+                    <a href="/schools/{{ school.url_slug }}" class="text-blue-600">{{ school.name }}</a>{% if not
+                    loop.last %},{% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </p>
+                <p><span class="font-bold">Hometown</span>: {{ player.hometown }}</p>
+            </div>
+            <div class="flex justify-end">
+                <div class="relative">
+                    <svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 517.11 488.74"
+                        overflow="visible" xml:space="preserve" class="text-black w-32 h-32 fill-current">
+                        <path d="M109.84,192.61c-6.66,7.97-12.6,14.92-18.35,22.01c-1.78,2.19-3.31,2.93-6.31,2.1c-29.03-8.02-56.58-19.43-82.22-35.28
+                                c-1.4-0.87-3.05-2.98-2.95-4.39C2.99,136.49,10.35,97.2,34.24,62.9c5.43-7.79,12.24-13.61,21.11-17.56
+                                C89.81,29.99,125.8,20.5,163.2,16.12c3.47-0.41,7-0.46,10.41-1.16c1.95-0.4,4.1-1.35,5.5-2.73c15.69-15.35,9.13-12.3,29.67-11.34
+                                c34.97,1.63,69.97,2.54,104.88-0.68c8.41-0.78,14.42,1.36,19.37,7.82c3.7,4.83,8.33,6.81,14.78,7.47
+                                c40.96,4.21,80.45,14.2,117.87,31.83c7.18,3.38,11.9,8.95,16.37,14.92c15.59,20.84,23.71,44.89,28.81,69.99
+                                c2.78,13.66,4.05,27.63,6.1,41.44c0.6,4.07-0.59,6.58-4.37,8.82c-25.49,15.1-52.52,26.43-81.07,34.25c-2.66,0.73-4.16,0.38-5.91-1.8
+                                c-5.9-7.34-12.05-14.47-18.87-22.59c-0.98,8.8-1.97,16.34-2.64,23.92c-2.31,26.04-4.8,52.07-6.68,78.14
+                                c-1.79,24.75-3.25,49.54-4.25,74.34c-1.35,33.3-2.08,66.63-3.26,99.94c-0.05,1.35-1.83,3.55-3.12,3.81
+                                c-21.97,4.46-43.86,9.56-66.03,12.72c-31.09,4.44-62.47,4.26-93.78,2.17c-32.59-2.17-64.83-6.78-96.56-14.75
+                                c-2.94-0.74-3.54-2.08-3.62-4.79c-0.93-32.48-1.6-64.98-3.08-97.44c-1.39-30.45-3.39-60.87-5.67-91.27
+                                c-2.01-26.89-4.77-53.73-7.22-80.59C110.66,196.92,110.29,195.31,109.84,192.61z" />
+                    </svg>
+
+                    <div class="absolute inset-0 flex items-center justify-center" , style="height: 96px;">
+                        <span class="text-6xl font-bold text-white">{{ player.jersey_number }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Offensive Stats</h1>

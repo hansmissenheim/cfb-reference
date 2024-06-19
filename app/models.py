@@ -50,6 +50,22 @@ class Player(SQLModel, table=True):
     def position(self) -> str:
         return POSITIONS[self.position_id]
 
+    @property
+    def height_ft(self) -> str:
+        return f"{self.height // 12}-{self.height % 12}"
+
+    @property
+    def height_cm(self) -> int:
+        return round(self.height * 2.54)
+
+    @property
+    def weight_lbs(self) -> int:
+        return self.weight + 160
+
+    @property
+    def weight_kg(self) -> int:
+        return round((self.weight + 160) * 0.45359237)
+
 
 class PlayerAttributes(SQLModel, table=True):
     player_id: int | None = Field(
@@ -69,7 +85,7 @@ class Stadium(SQLModel, table=True):
     city: str = Field(alias="SCIT")
     state_id: int = Field(alias="STAT")
     nickname: str = Field(alias="STNN", default="")
-    capcity: int = Field(alias="SCAP")
+    capacity: int = Field(alias="SCAP")
 
     @property
     def state(self) -> str:
@@ -81,6 +97,7 @@ class School(SQLModel, table=True):
     name: str = Field(alias="TDNA")
     nickname: str = Field(alias="TMNA")
     url_slug: str = Field(default="", unique=True)
+    logo_id: int = Field(alias="TLGL")
     stadium_id: int = Field(alias="SGID", foreign_key="stadium.id")
 
     stadium: Stadium = Relationship()

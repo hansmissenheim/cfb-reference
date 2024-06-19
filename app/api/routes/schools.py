@@ -5,7 +5,7 @@ from sqlmodel import select
 
 from app.core.config import settings
 from app.database import SessionDep
-from app.models import School, Team
+from app.models.school import School, Team
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)

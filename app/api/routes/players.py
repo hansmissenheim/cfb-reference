@@ -23,7 +23,7 @@ def player(request: Request, player_slug: str, session: SessionDep):
     return templates.TemplateResponse("player.html", context)
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("", response_class=HTMLResponse)
 def all_players(request: Request, session: SessionDep):
     alphabet = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
     players_dict = {}

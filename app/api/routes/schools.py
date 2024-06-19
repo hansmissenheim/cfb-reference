@@ -22,7 +22,7 @@ def school(request: Request, school_slug: str, session: SessionDep):
     return templates.TemplateResponse("school.html", context)
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("", response_class=HTMLResponse)
 def all_schools(request: Request):
     return templates.TemplateResponse("school_all.html", {"request": request})
 

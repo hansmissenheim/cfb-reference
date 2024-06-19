@@ -23,8 +23,11 @@ def school(request: Request, school_slug: str, session: SessionDep):
 
 
 @router.get("", response_class=HTMLResponse)
-def all_schools(request: Request):
-    return templates.TemplateResponse("school_all.html", {"request": request})
+def all_schools(request: Request, session: SessionDep):
+    schools = session.exec(select(School).order_by(School.name)).all()
+
+    context = {"request": request, "schools": schools}
+    return templates.TemplateResponse("school_all.html", context)
 
 
 @router.get("/{school_slug}/{year}", response_class=HTMLResponse)

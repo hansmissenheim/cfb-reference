@@ -8,8 +8,7 @@ from sqlmodel import or_, select
 from app.core.config import settings
 from app.database import SessionDep
 from app.load.main import load_save
-from app.models.player import Player
-from app.models.school import School
+from app.models import Player, School
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)

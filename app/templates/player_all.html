@@ -2,23 +2,30 @@
 {% block content %}
 <div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
     {% include '/shared/letter_nav.html' %}
-    <div id="letterCards"
-        class="container m-auto py-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {% for letter, players in players.items() %}
-        <div class="w-full pb-6 px-6 bg-white rounded-lg shadow-lg">
-            <h1 class="text-4xl font-bold mb-4 font-bold text-gray-800 pt-4">{{ letter }}</h1>
-            <ul>
-                {% for player in players %}
-                <li>
-                    <a href="/players/{{ player.url_slug }}" class="text-blue-600">{{ player.first_name }} {{
-                        player.last_name }}</a>
-                </li>
-                {% endfor %}
-            </ul>
+    {% for letter, players in players.items() %}
+    <div class="container m-auto py-2">
+        <div class="w-full">
+            <h1 class="text-4xl font-bold pb-2">{{letter}}</h1>
         </div>
-        {% endfor %}
+        <div id="letterCards"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {% for player in players %}
+            <a href="/players/{{ player.url_slug }}">
+                <div class="w-full p-2 bg-white rounded-lg shadow-lg relative">
+                    <div class="flex flex-col">
+                        <span class="text-xl">{{ player.first_name }}</span>
+                        <span class="text-xl font-bold">{{ player.last_name }}</span>
+                    </div>
+
+                    <img src="/static/img/logos/128/logo{{ player.schools[-1].logo_id }}.webp"
+                        class="absolute bottom-4 right-16 w-20 h-20" />
+                    <img src="/static/img/faces/128/face{{ player.face_id }}.webp"
+                        class="absolute bottom-0 right-0 object-contain" />
+                </div>
+            </a>
+            {% endfor %}
+        </div>
     </div>
-
-
+    {% endfor %}
 </div>
 {% endblock %}

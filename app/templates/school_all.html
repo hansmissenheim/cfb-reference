@@ -1,8 +1,19 @@
 {% extends "/shared/base.html" %}
 {% block content %}
-<div class="container mx-auto flex-col py-6 gap-4">
-    <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">All Schools</h1>
+<div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
+    <div id="schoolCards" class="container m-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {% for school in schools %}
+        <a href="/schools/{{ school.url_slug }}">
+            <div class="w-full p-2 bg-white rounded-lg shadow-lg relative flex items-center">
+                <div class="flex flex-col">
+                    <span class="text-xl">{{ school.name }}</span>
+                    <span class="text-xl font-bold">{{ school.nickname }}</span>
+                </div>
+                <img src="/static/img/logos/128/logo{{ school.logo_id }}.webp"
+                    class="justify-center object-contain w-16 h-16 ml-auto" />
+            </div>
+        </a>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

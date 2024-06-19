@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.sql import func
@@ -39,3 +39,15 @@ def all_players(request: Request, session: SessionDep):
 
     context = {"request": request, "players": players_dict}
     return templates.TemplateResponse("player_all.html", context)
+
+
+@router.get("/letter/{letter}", response_class=HTMLResponse)
+def all_players_with_letter(request: Request, letter: str, session: SessionDep):
+    players = session.exec(
+        select(Player)
+        .where(Player.last_name.startswith(letter))
+        .order_by(Player.last_name)
+    ).all()
+
+    context = {"request": request, "players": players}
+    return templates.TemplateResponse("player_letter.html", context)

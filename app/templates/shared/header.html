@@ -4,7 +4,7 @@
             <img src="/static/img/cfb-reference-logo-64h.png" alt="Logo">
         </a>
         <div
-            class="relative flex items-center w-96 h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden ml-auto border border-gray-300 mt-4">
+            class="relative flex w-96 h-12 rounded-lg focus-within:shadow-lg bg-white ml-auto border border-gray-300 mt-4">
             <div class="grid place-items-center h-full w-12 text-gray-300 ">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -12,10 +12,14 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input class="peer h-full w-full outline-none text-lg text-gray-700 pr-2" type="text" id="search"
-                placeholder="Enter person, team, etc" />
+            <form class="w-full">
+                <input type="text" name="search" hx-post="/search" hx-trigger="keyup changed delay:200ms"
+                    hx-target="#search-results" hx-indicator="#search-indicator"
+                    class="peer rounded-lg w-full h-full outline-none text-lg text-gray-700 pr-2" type="text"
+                    id="search" placeholder="Enter person, team, etc" />
+            </form>
+            <div id="search-results" class="absolute w-full bg-white mt-12 rounded-lg shadow-lg z-50"></div>
         </div>
-    </div>
 </header>
 <nav class="bg-sky-900 px-2 py-1">
     <div class="container mx-auto flex items-center justify-between">
@@ -27,3 +31,11 @@
             Save File</a>
     </div>
 </nav>
+<script>
+    document.getElementById('search').addEventListener('blur', function () {
+        document.getElementById('search-results').style.display = 'none';
+    });
+    document.getElementById('search').addEventListener('focus', function () {
+        document.getElementById('search-results').style.display = 'block';
+    });
+</script>

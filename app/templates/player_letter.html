@@ -9,6 +9,9 @@
                     <span class="text-xl">{{ player.first_name }}</span>
                     <span class="text-xl font-bold">{{ player.last_name }}</span>
                 </div>
+
+                <img src="/static/img/logos/128/logo{{ player.schools[-1].logo_id }}.webp"
+                    class="absolute bottom-4 right-16 w-20 h-20" />
                 <img src="/static/img/faces/128/face{{ player.face_id }}.webp"
                     class="absolute bottom-0 right-0 object-contain" />
             </div>

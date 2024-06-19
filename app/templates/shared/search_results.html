@@ -1,0 +1,27 @@
+<ul class="list-reset">
+    {% if players %}
+    <li class="px-4 py-2 font-bold">Players</li>
+    {% for player in players %}
+    <a href="/players/{{ player.url_slug }}" class="block" onmousedown="this.click()">
+        <li class="px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer">
+            {{ player.first_name }} {{ player.last_name }}
+        </li>
+    </a>
+    {% endfor %}
+    {% if schools %}
+    <li class="px-4 py-2">
+        <hr>
+    </li>
+    {% endif %}
+    {% endif %}
+    {% if schools %}
+    <li class="px-4 py-2 font-bold">Schools</li>
+    {% for school in schools %}
+    <a href="/schools/{{ school.url_slug }}" class="block" onmousedown="this.click()">
+        <li class="px-4 py-2 hover:bg-gray-100 hover:rounded-lg cursor-pointer">
+            {{ school.name }}
+        </li>
+    </a>
+    {% endfor %}
+    {% endif %}
+</ul>

@@ -3,7 +3,6 @@ from typing import BinaryIO
 import ncaadb
 from sqlmodel import Session, select
 
-from app.database import get_db
 from app.load.utils import generate_player_url_slug, generate_url_slug
 from app.models.player import Player, PlayerAttributes
 from app.models.school import Coach, School, Stadium, Team
@@ -127,8 +126,7 @@ class DataLoader:
         self.session.commit()
 
 
-def load_save(save_file: BinaryIO) -> None:
-    session = next(get_db())
+def load_save(save_file: BinaryIO, session: Session) -> None:
     loader = DataLoader(save_file, session)
 
     loader.load_stadiums()

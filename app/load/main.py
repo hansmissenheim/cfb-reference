@@ -25,6 +25,13 @@ class DataLoader:
         self.data_year += int(self.save_data["SEAI"][0]["SSYE"])
         self.session = session
 
+    def get_team(self, school_id: int) -> Team | None:
+        return self.session.exec(
+            select(Team)
+            .where(Team.school_id == school_id)
+            .where(Team.year == self.data_year)
+        ).one_or_none()
+
     def load_stadiums(self):
         for stadium_dict in self.save_data["STAD"]:
             stadium_in = Stadium(**stadium_dict)
@@ -55,12 +62,7 @@ class DataLoader:
             else:
                 self.session.add(school_in)
 
-            team = self.session.exec(
-                select(Team)
-                .where(Team.school_id == school_id)
-                .where(Team.year == self.data_year)
-            ).first()
-
+            team = self.get_team(school_id)
             if team is None:
                 team = Team(school_id=school_id, year=self.data_year)
                 self.session.add(team)
@@ -83,12 +85,8 @@ class DataLoader:
             # Only add coach to team if they are the head coach
             if coach.position > 0:
                 continue
-            team = self.session.exec(
-                select(Team)
-                .where(Team.school_id == coach_dict["TGID"])
-                .where(Team.year == self.data_year)
-            ).first()
 
+            team = self.get_team(coach_dict["TGID"])
             if team is not None and team not in coach.teams:
                 coach.teams.append(team)
 
@@ -120,12 +118,7 @@ class DataLoader:
 
             self.session.add(player)
 
-            team = self.session.exec(
-                select(Team)
-                .where(Team.school_id == player_dict["TGID"])
-                .where(Team.year == self.data_year)
-            ).first()
-
+            team = self.get_team(player_dict["TGID"])
             if team is not None and team not in player.teams:
                 player.teams.append(team)
                 if team.school is not None and team.school not in player.schools:

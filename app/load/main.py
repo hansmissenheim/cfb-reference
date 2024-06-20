@@ -1,10 +1,10 @@
-import re
 from typing import BinaryIO
 
 import ncaadb
 from sqlmodel import Session, select
 
 from app.database import engine
+from app.load.utils import generate_url_slug
 from app.models.player import Player, PlayerAttributes
 from app.models.school import Coach, School, Stadium, Team
 
@@ -42,19 +42,15 @@ def load_stadiums(stadium_dicts: list[dict]):
         session.commit()
 
 
-def school_url_slug(school_dict: dict) -> str:
-    name = school_dict.get("TDNA", "")
-    url_slug = name.replace(" ", "-").lower()
-    return re.sub(r"[^a-z-]", "", url_slug)
-
-
 def load_schools(school_dicts: list[dict], year: int):
     with Session(engine) as session:
         for school_dict in school_dicts:
-            school_dict["url_slug"] = school_url_slug(school_dict)
+            school_id = school_dict.get("TGID")
+            school_name = school_dict.get("TDNA")
+
+            school_dict["url_slug"] = generate_url_slug(school_name)
             school_in = School(**school_dict)
 
-            school_id = school_dict.get("TGID")
             school = session.get(School, school_id)
             if school:
                 update_dict = school_in.model_dump()
@@ -103,11 +99,8 @@ def load_coaches(coach_dicts: list[dict], year: int):
         session.commit()
 
 
-def player_url_slug(session: Session, player_dict: dict) -> str:
-    first_name, last_name = player_dict.get("PFNA", ""), player_dict.get("PLNA", "")
-    url_slug = f"{first_name}-{last_name}".replace(" ", "-").lower()
-    url_slug = re.sub(r"[^a-z-]", "", url_slug)
-
+def player_url_slug(session: Session, first_name: str, last_name: str) -> str:
+    url_slug = generate_url_slug(f"{first_name}-{last_name}")
     urls = session.exec(
         select(Player.url_slug).where(Player.url_slug.startswith(url_slug))
     ).all()
@@ -136,7 +129,8 @@ def load_players(player_dicts: list[dict], year: int):
                 )
                 player.sqlmodel_update(update_dict)
             else:
-                player_in.url_slug = player_url_slug(session, player_dict)
+                first_name, last_name = player_dict.get("PFNA"), player_dict.get("PLNA")
+                player_in.url_slug = player_url_slug(session, first_name, last_name)
                 player = player_in
 
             session.add(player)

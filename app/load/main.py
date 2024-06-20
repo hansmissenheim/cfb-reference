@@ -10,25 +10,23 @@ from app.models.school import Coach, School, Stadium, Team
 
 
 def load_save(save_file: BinaryIO) -> None:
-    save_data = ncaadb.read_db(save_file)
-    coach_dicts = save_data["COCH"].to_dict(orient="records")
-    player_dicts = save_data["PLAY"].to_dict(orient="records")
-    school_dicts = save_data["TEAM"].to_dict(orient="records")
-    stadium_dicts = save_data["STAD"].to_dict(orient="records")
-    if save_data["SEAI"] is None:
-        raise ValueError("Error. No SEAI data found in save file.")
-    else:
-        current_year = 2013 + int(save_data["SEAI"].at[0, "SSYE"])
+    ncaa_db_file = ncaadb.read_db(save_file)
+    tables = ["COCH", "PLAY", "TEAM", "STAD", "SEAI"]
 
-    load_stadiums(stadium_dicts)
-    load_schools(school_dicts, current_year)
-    load_players(player_dicts, current_year)
-    load_coaches(coach_dicts, current_year)
+    save_data = {
+        table: ncaa_db_file[table].to_dict(orient="records") for table in tables
+    }
+    file_year = 2013 + int(save_data["SEAI"][0]["SSYE"])
+
+    load_stadiums(save_data)
+    load_schools(save_data, file_year)
+    load_players(save_data, file_year)
+    load_coaches(save_data, file_year)
 
 
-def load_stadiums(stadium_dicts: list[dict]):
+def load_stadiums(save_data: dict[str, list[dict]]):
     with Session(engine) as session:
-        for stadium_dict in stadium_dicts:
+        for stadium_dict in save_data["STAD"]:
             stadium_in = Stadium(**stadium_dict)
 
             stadium = session.get(Stadium, stadium_dict["SGID"])
@@ -42,9 +40,9 @@ def load_stadiums(stadium_dicts: list[dict]):
         session.commit()
 
 
-def load_schools(school_dicts: list[dict], year: int):
+def load_schools(save_data: dict[str, list[dict]], year: int):
     with Session(engine) as session:
-        for school_dict in school_dicts:
+        for school_dict in save_data["TEAM"]:
             school_id: int = school_dict["TGID"]
             school_name: str = school_dict["TDNA"]
 
@@ -70,9 +68,9 @@ def load_schools(school_dicts: list[dict], year: int):
         session.commit()
 
 
-def load_coaches(coach_dicts: list[dict], year: int):
+def load_coaches(save_data: dict[str, list[dict]], year: int):
     with Session(engine) as session:
-        for coach_dict in coach_dicts:
+        for coach_dict in save_data["COCH"]:
             coach_in = Coach(**coach_dict)
 
             coach = session.get(Coach, coach_dict["CCID"])
@@ -107,9 +105,9 @@ def player_url_slug(session: Session, first_name: str, last_name: str) -> str:
     return f"{url_slug}-{len(urls) + 1}"
 
 
-def load_players(player_dicts: list[dict], year: int):
+def load_players(save_data: dict[str, list[dict]], year: int):
     with Session(engine) as session:
-        for player_dict in player_dicts:
+        for player_dict in save_data["PLAY"]:
             player_dict["attributes"] = PlayerAttributes(**player_dict)
             player_in = Player(**player_dict)
 

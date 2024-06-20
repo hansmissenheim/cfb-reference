@@ -5,7 +5,8 @@ import ncaadb
 from sqlmodel import Session, select
 
 from app.database import engine
-from app.models import Coach, Player, PlayerAttributes, School, Stadium, Team
+from app.models.player import Player, PlayerAttributes
+from app.models.school import Coach, School, Stadium, Team
 
 
 def load_save(save_file: BinaryIO) -> None:

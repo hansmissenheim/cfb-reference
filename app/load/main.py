@@ -1,15 +1,18 @@
 from typing import BinaryIO
 
 import ncaadb
+from sqlalchemy import delete
 from sqlmodel import Session, select
 
 from app.load.utils import generate_player_url_slug, generate_url_slug
+from app.models.game import Game
+from app.models.links import TeamGameLink
 from app.models.player import Player, PlayerAttributes
 from app.models.school import Coach, School, Stadium, Team
 
 
 class DataLoader:
-    TABLES = ["COCH", "PLAY", "TEAM", "STAD", "SEAI"]
+    TABLES = ["COCH", "PLAY", "SCHD", "SEAI", "STAD", "TEAM"]
     data_year = 2013
 
     save_data: dict[str, list[dict]]
@@ -125,6 +128,46 @@ class DataLoader:
 
         self.session.commit()
 
+    def load_games(self):
+        for row in self.save_data["SCHD"]:
+            game_in = Game(**row)
+            game = self.session.exec(
+                select(Game)
+                .where(Game.ea_id == game_in.ea_id)
+                .where(Game.week == game_in.week)
+                .where(Game.year == game_in.year)
+            ).one_or_none()
+
+            if game:
+                update_dict = game_in.model_dump(exclude={"id"})
+                game.sqlmodel_update(update_dict)
+                self.session.exec(
+                    delete(TeamGameLink).where(TeamGameLink.game_id == game.id)  # type: ignore
+                )
+            else:
+                game = game_in
+
+            home_team = self.session.exec(
+                select(Team).where(Team.school_id == row["GHTG"])
+            ).one_or_none()
+            away_team = self.session.exec(
+                select(Team).where(Team.school_id == row["GATG"])
+            ).one_or_none()
+
+            if row["GHTG"] == 1023:
+                print(home_team)
+
+            if home_team is None and away_team is None:
+                self.session.add(game)
+            if home_team is not None:
+                game_link_home = TeamGameLink(team=home_team, game=game, is_home=True)
+                self.session.add(game_link_home)
+            if away_team is not None:
+                game_link_away = TeamGameLink(team=away_team, game=game, is_home=False)
+                self.session.add(game_link_away)
+
+        self.session.commit()
+
 
 def load_save(save_file: BinaryIO, session: Session) -> None:
     loader = DataLoader(save_file, session)
@@ -133,3 +176,4 @@ def load_save(save_file: BinaryIO, session: Session) -> None:
     loader.load_schools()
     loader.load_players()
     loader.load_coaches()
+    loader.load_games()

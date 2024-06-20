@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
+    from app.models.links import TeamGameLink
     from app.models.school import Stadium
 
 
@@ -18,3 +19,4 @@ class Game(SQLModel, table=True):
     time: str = Field(alias="GTOD")
 
     stadium: "Stadium" = Relationship()
+    team_links: list["TeamGameLink"] = Relationship(back_populates="game")

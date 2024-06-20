@@ -16,7 +16,7 @@ class Game(SQLModel, table=True):
     year: int = Field(alias="SESI")
     week: int = Field(alias="SEWN")
     day: int = Field(alias="GDAT")
-    time: str = Field(alias="GTOD")
+    time: int = Field(alias="GTOD")
 
     stadium: "Stadium" = Relationship()
     team_links: list["TeamGameLink"] = Relationship(back_populates="game")

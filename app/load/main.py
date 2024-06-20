@@ -124,9 +124,7 @@ def load_players(save_data: dict[str, list[dict]], year: int, session: Session):
             )
             player.sqlmodel_update(update_dict)
         else:
-            first_name: str = player_dict["PFNA"]
-            last_name: str = player_dict["PLNA"]
-            player_in.url_slug = player_url_slug(session, first_name, last_name)
+            player_in.url_slug = generate_player_url_slug(player_in, session)
             player = player_in
 
         session.add(player)

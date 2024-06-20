@@ -31,7 +31,7 @@ def load_stadiums(stadium_dicts: list[dict]):
         for stadium_dict in stadium_dicts:
             stadium_in = Stadium(**stadium_dict)
 
-            stadium = session.get(Stadium, stadium_dict.get("SGID"))
+            stadium = session.get(Stadium, stadium_dict["SGID"])
             if stadium:
                 update_dict = stadium_in.model_dump()
                 stadium.sqlmodel_update(update_dict)
@@ -45,8 +45,8 @@ def load_stadiums(stadium_dicts: list[dict]):
 def load_schools(school_dicts: list[dict], year: int):
     with Session(engine) as session:
         for school_dict in school_dicts:
-            school_id = school_dict.get("TGID")
-            school_name = school_dict.get("TDNA")
+            school_id: int = school_dict["TGID"]
+            school_name: str = school_dict["TDNA"]
 
             school_dict["url_slug"] = generate_url_slug(school_name)
             school_in = School(**school_dict)
@@ -75,7 +75,7 @@ def load_coaches(coach_dicts: list[dict], year: int):
         for coach_dict in coach_dicts:
             coach_in = Coach(**coach_dict)
 
-            coach = session.get(Coach, coach_dict.get("CCID"))
+            coach = session.get(Coach, coach_dict["CCID"])
             if coach:
                 update_dict = coach_in.model_dump()
                 coach.sqlmodel_update(update_dict)
@@ -89,7 +89,7 @@ def load_coaches(coach_dicts: list[dict], year: int):
                 continue
             team = session.exec(
                 select(Team)
-                .where(Team.school_id == coach_dict.get("TGID"))
+                .where(Team.school_id == coach_dict["TGID"])
                 .where(Team.year == year)
             ).first()
 
@@ -129,7 +129,8 @@ def load_players(player_dicts: list[dict], year: int):
                 )
                 player.sqlmodel_update(update_dict)
             else:
-                first_name, last_name = player_dict.get("PFNA"), player_dict.get("PLNA")
+                first_name: str = player_dict["PFNA"]
+                last_name: str = player_dict["PLNA"]
                 player_in.url_slug = player_url_slug(session, first_name, last_name)
                 player = player_in
 
@@ -137,7 +138,7 @@ def load_players(player_dicts: list[dict], year: int):
 
             team = session.exec(
                 select(Team)
-                .where(Team.school_id == player_dict.get("TGID"))
+                .where(Team.school_id == player_dict["TGID"])
                 .where(Team.year == year)
             ).first()
 

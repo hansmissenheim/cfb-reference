@@ -56,7 +56,7 @@ class Team(SQLModel, table=True):
 
 
 class TeamStats(SQLModel, table=True):
-    team_id: int | None = Field(default=None, foreign_key="school.id", primary_key=True)
+    team_id: int | None = Field(default=None, foreign_key="team.id", primary_key=True)
     wins: int = Field(alias="")
     losses: int = Field(alias="")
     ties: int = Field(alias="")

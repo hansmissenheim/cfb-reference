@@ -49,9 +49,30 @@ class Team(SQLModel, table=True):
     game_links: list["TeamGameLink"] = Relationship(back_populates="team")
     school_id: int | None = Field(default=None, foreign_key="school.id")
     school: School | None = Relationship(back_populates="teams")
+    stats: "TeamStats" = Relationship(back_populates="team")
     players: list["Player"] = Relationship(
         back_populates="teams", link_model=PlayerTeamLink
     )
+
+
+class TeamStats(SQLModel, table=True):
+    team_id: int | None = Field(default=None, foreign_key="school.id", primary_key=True)
+    wins: int = Field(alias="")
+    losses: int = Field(alias="")
+    ties: int = Field(alias="")
+    streak: int = Field(alias="")
+    avg_attendance: int = Field(alias="")
+    bcs_rack: int = Field(alias="")
+    bcs_rank_prev: int = Field(alias="")
+    bcs_first_votes: int = Field(alias="")
+    media_rank: int = Field(alias="")
+    media_rank_prev: int = Field(alias="")
+    media_first_votes: int = Field(alias="")
+    coaches_rank: int = Field(alias="")
+    coaches_rank_prev: int = Field(alias="")
+    coaches_first_votes: int = Field(alias="")
+
+    team: Team = Relationship(back_populates="stats")
 
 
 class Coach(SQLModel, table=True):

@@ -29,4 +29,4 @@ def get_game(request: Request, url_slug: str, session: SessionDep):
         "home_team": home_team,
         "away_team": away_team,
     }
-    return templates.TemplateResponse("player.html", context)
+    return templates.TemplateResponse("game.html", context)

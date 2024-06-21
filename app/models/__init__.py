@@ -3,7 +3,7 @@ from sqlmodel import SQLModel
 from app.models.game import Game
 from app.models.links import PlayerSchoolLink, PlayerTeamLink, TeamGameLink
 from app.models.player import Player, PlayerAttributes
-from app.models.school import Coach, School, Stadium, Team
+from app.models.school import Coach, School, SchoolStats, Stadium, Team
 
 __all__ = [
     "Coach",
@@ -13,6 +13,7 @@ __all__ = [
     "PlayerSchoolLink",
     "PlayerTeamLink",
     "School",
+    "SchoolStats",
     "Stadium",
     "Team",
     "TeamGameLink",

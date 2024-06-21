@@ -20,7 +20,24 @@ class School(SQLModel, table=True):
     stadium_id: int = Field(alias="SGID", foreign_key="stadium.id")
 
     stadium: "Stadium" = Relationship()
+    stats: "SchoolStats" = Relationship(back_populates="school")
     teams: list["Team"] = Relationship(back_populates="school")
+
+
+class SchoolStats(SQLModel, table=True):
+    school_id: int | None = Field(
+        default=None, foreign_key="school.id", primary_key=True
+    )
+    wins: int = Field(alias="TCWI")
+    losses: int = Field(alias="TCLO")
+    ties: int = Field(alias="TCTI")
+    bowl_wins: int = Field(alias="CBOW")
+    bowl_losses: int = Field(alias="CBOL")
+    bowl_ties: int = Field(alias="CBOT")
+    conf_champs: int = Field(alias="CCTW")
+    natl_champs: int = Field(alias="CNTW")
+
+    school: School = Relationship(back_populates="stats")
 
 
 class Team(SQLModel, table=True):

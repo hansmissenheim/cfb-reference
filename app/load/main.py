@@ -9,6 +9,7 @@ from app.load.utils import (
     generate_game_url_slug,
     generate_player_url_slug,
     generate_url_slug,
+    merge_tables,
 )
 from app.models.game import Game
 from app.models.links import TeamGameLink
@@ -17,7 +18,7 @@ from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamSta
 
 
 class DataLoader:
-    TABLES = ["COCH", "PLAY", "SCHD", "SEAI", "STAD", "TEAM"]
+    TABLES = ["COCH", "PLAY", "SCHD", "SEAI", "STAD", "TEAM", "TSSE"]
     data_year = 2013
 
     save_data: dict[str, list[dict]]
@@ -54,7 +55,11 @@ class DataLoader:
         self.session.commit()
 
     def load_schools(self):
-        for row in self.save_data["TEAM"]:
+        team_info = self.save_data["TEAM"]
+        team_stats = self.save_data["TSSE"]
+        team_dicts = merge_tables("TGID", team_info, team_stats)
+
+        for row in team_dicts:
             school_id: int = row["TGID"]
             school_name: str = row["TDNA"]
             row["url_slug"] = generate_url_slug(school_name)

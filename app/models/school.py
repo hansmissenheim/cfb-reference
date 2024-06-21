@@ -6,6 +6,7 @@ from app.mapping import STATES
 from app.models.links import PlayerTeamLink
 
 if TYPE_CHECKING:
+    from app.models.links import TeamGameLink
     from app.models.player import Player
     from app.models.school import Coach, School, Stadium, Team
 
@@ -28,6 +29,7 @@ class Team(SQLModel, table=True):
 
     coach_id: int | None = Field(default=None, foreign_key="coach.id")
     coach: Optional["Coach"] = Relationship(back_populates="teams")
+    game_links: list["TeamGameLink"] = Relationship(back_populates="team")
     school_id: int | None = Field(default=None, foreign_key="school.id")
     school: School | None = Relationship(back_populates="teams")
     players: list["Player"] = Relationship(

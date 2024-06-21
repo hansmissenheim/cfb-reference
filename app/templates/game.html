@@ -1,0 +1,39 @@
+{% extends "/shared/base.html" %}
+{% block content %}
+<div class="container mx-auto flex-col py-6 grid grid-cols-1 gap-4">
+    <div class="w-full p-6 bg-white rounded-lg shadow-lg">
+        <div class="flex items-start space-x-4">
+            <div class="flex-grow">
+                <p class="text-2xl font-bold">{{ away_team.school.name }} at {{ home_team.school.name }}, {{
+                    game.date.strftime('%B %d, %Y') }}</p>
+            </div>
+        </div>
+        <div class="container flex justify-center items-center space-x-20 mt-4">
+            <div class="text-center">
+                <img src="/static/img/logos/128/logo{{ away_team.school.logo_id }}.webp" alt="Away Team Logo"
+                    class="mx-auto">
+                <div class="block mt-2"><a href="/schools/{{ away_team.school.url_slug }}/{{ away_team.year }}"
+                        class="text-blue-600">{{
+                        away_team.school.name
+                        }}</a></div>
+                <p class="text-4xl font-bold mt-2">{{ game.away_score }}</p>
+
+            </div>
+            <div class="text-center">
+                <img src="/static/img/logos/128/logo{{ home_team.school.logo_id }}.webp" alt="Home Team Logo"
+                    class="mx-auto">
+                <div class="block mt-2"><a href="/schools/{{ home_team.school.url_slug }}/{{ home_team.year }}"
+                        class="text-blue-600">{{
+                        home_team.school.name
+                        }}</a></div>
+                <p class="text-4xl font-bold mt-2">{{ game.home_score }}</p>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <p>{{ game.stadium.name }}</p>
+            <p>{{ game.date.strftime('%A %b %d, %Y') }}</p>
+            <p>{{ game.date.strftime('%I:%M %p ET') }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

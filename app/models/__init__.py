@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel  # noqa
 
 from app.models.game import Game
 from app.models.links import PlayerSchoolLink, PlayerTeamLink, TeamGameLink

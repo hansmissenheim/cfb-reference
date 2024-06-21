@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -13,10 +14,7 @@ class Game(SQLModel, table=True):
     home_score: int = Field(alias="GHSC")
     away_score: int = Field(alias="GASC")
     stadium_id: int = Field(alias="SGID", foreign_key="stadium.id")
-    year: int = Field(alias="SESI")
-    week: int = Field(alias="SEWN")
-    day: int = Field(alias="GDAT")
-    time: int = Field(alias="GTOD")
+    date: datetime = Field(alias="datetime")
 
     stadium: "Stadium" = Relationship()
     team_links: list["TeamGameLink"] = Relationship(back_populates="game")

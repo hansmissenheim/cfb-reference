@@ -13,7 +13,7 @@ from app.load.utils import (
 from app.models.game import Game
 from app.models.links import TeamGameLink
 from app.models.player import Player, PlayerAttributes
-from app.models.school import Coach, School, Stadium, Team
+from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamStats
 
 
 class DataLoader:
@@ -54,13 +54,13 @@ class DataLoader:
         self.session.commit()
 
     def load_schools(self):
-        for school_dict in self.save_data["TEAM"]:
-            school_id: int = school_dict["TGID"]
-            school_name: str = school_dict["TDNA"]
+        for row in self.save_data["TEAM"]:
+            school_id: int = row["TGID"]
+            school_name: str = row["TDNA"]
+            row["url_slug"] = generate_url_slug(school_name)
 
-            school_dict["url_slug"] = generate_url_slug(school_name)
-            school_in = School(**school_dict)
-
+            school_in_stats = SchoolStats(**row)
+            school_in = School(**row, stats=school_in_stats)
             school = self.session.get(School, school_id)
             if school:
                 update_dict = school_in.model_dump()
@@ -70,9 +70,16 @@ class DataLoader:
                 self.session.add(school_in)
 
             team = self.get_team(school_id)
+            team_in_stats = TeamStats(**row)
             if team is None:
-                team = Team(school_id=school_id, year=self.data_year)
-                self.session.add(team)
+                team = Team(
+                    school_id=school_id, year=self.data_year, stats=team_in_stats
+                )
+            else:
+                update_dict = team_in_stats.model_dump(exclude={"id"})
+                team.stats.sqlmodel_update(update_dict)
+
+            self.session.add(team)
 
         self.session.commit()
 

@@ -34,3 +34,18 @@ def game_datetime(year: int, week: int, day: int, time: int) -> datetime:
     )
     target_time = start_monday + timedelta(weeks=week, days=day, minutes=time)
     return target_time
+
+
+def merge_tables(key: str, table_1: list[dict], table_2: list[dict]) -> list[dict]:
+    lookup = {row[key]: row for row in table_2}
+    result = []
+    for row in table_1:
+        if row[key] in lookup:
+            row.update(lookup[row[key]])
+        result.append(row)
+
+    for row in table_2:
+        if row[key] not in {r[key] for r in table_1}:
+            result.append(row)
+
+    return result

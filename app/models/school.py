@@ -34,8 +34,8 @@ class SchoolStats(SQLModel, table=True):
     bowl_wins: int = Field(alias="CBOW")
     bowl_losses: int = Field(alias="CBOL")
     bowl_ties: int = Field(alias="CBOT")
-    conf_champs: int = Field(alias="CCTW")
-    natl_champs: int = Field(alias="CNTW")
+    conf_champs: int = Field(alias="NUMC")
+    natl_champs: int = Field(alias="NCYN")
 
     school: School = Relationship(back_populates="stats")
 

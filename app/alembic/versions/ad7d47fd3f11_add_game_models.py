@@ -1,8 +1,8 @@
 """add_game_models
 
-Revision ID: 9642d3c14a59
+Revision ID: ad7d47fd3f11
 Revises: 1a3643bfcd59
-Create Date: 2024-06-20 23:54:18.013779
+Create Date: 2024-06-21 00:14:09.025100
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9642d3c14a59'
+revision: str = 'ad7d47fd3f11'
 down_revision: Union[str, None] = '1a3643bfcd59'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,8 +28,10 @@ def upgrade() -> None:
     sa.Column('away_score', sa.Integer(), nullable=False),
     sa.Column('stadium_id', sa.Integer(), nullable=False),
     sa.Column('date', sa.DateTime(), nullable=False),
+    sa.Column('url_slug', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.ForeignKeyConstraint(['stadium_id'], ['stadium.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('url_slug')
     )
     op.create_table('teamgamelink',
     sa.Column('team_id', sa.Integer(), nullable=False),

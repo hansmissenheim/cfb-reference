@@ -15,6 +15,7 @@ class Game(SQLModel, table=True):
     away_score: int = Field(alias="GASC")
     stadium_id: int = Field(alias="SGID", foreign_key="stadium.id")
     date: datetime = Field(alias="datetime")
+    url_slug: str | None = Field(default=None, unique=True)
 
     stadium: "Stadium" = Relationship()
     team_links: list["TeamGameLink"] = Relationship(back_populates="game")

@@ -4,7 +4,12 @@ import ncaadb
 from sqlalchemy import delete
 from sqlmodel import Session, select
 
-from app.load.utils import game_datetime, generate_player_url_slug, generate_url_slug
+from app.load.utils import (
+    game_datetime,
+    generate_game_url_slug,
+    generate_player_url_slug,
+    generate_url_slug,
+)
 from app.models.game import Game
 from app.models.links import TeamGameLink
 from app.models.player import Player, PlayerAttributes
@@ -144,6 +149,15 @@ class DataLoader:
                 .where(Game.date == game_in.date)
             ).one_or_none()
 
+            home_team = self.session.exec(
+                select(Team).where(Team.school_id == row["GHTG"])
+            ).one_or_none()
+            away_team = self.session.exec(
+                select(Team).where(Team.school_id == row["GATG"])
+            ).one_or_none()
+
+            game_in.url_slug = generate_game_url_slug(game_in.date, home_team)
+
             if game:
                 update_dict = game_in.model_dump(exclude={"id"})
                 game.sqlmodel_update(update_dict)
@@ -152,13 +166,6 @@ class DataLoader:
                 )
             else:
                 game = game_in
-
-            home_team = self.session.exec(
-                select(Team).where(Team.school_id == row["GHTG"])
-            ).one_or_none()
-            away_team = self.session.exec(
-                select(Team).where(Team.school_id == row["GATG"])
-            ).one_or_none()
 
             if home_team is None and away_team is None:
                 self.session.add(game)

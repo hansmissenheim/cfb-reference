@@ -33,7 +33,48 @@
         </div>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Results by Year</h1>
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">Results by Year</h1>
+        <div class="overflow-x-auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="py-1 px-2 text-right border">Rk</th>
+                        <th class="py-1 px-2 text-right border">Year</th>
+                        <th class="py-1 px-2 text-right border">W</th>
+                        <th class="py-1 px-2 text-right border">L</th>
+                        <th class="py-1 px-2 text-right border">T</th>
+                        <th class="py-1 px-2 text-right border">Pct</th>
+                        <th class="py-1 px-2 text-center border">BCS</th>
+                        <th class="py-1 px-2 text-center border">AP</th>
+                        <th class="py-1 px-2 text-center border">CP</th>
+                        <th class="py-1 px-2 text-left border">Coach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in school.teams|reverse %}
+                    <tr class="border border-blue-gray-200">
+                        <th class="py-1 px-2 border text-right">{{ loop.index }}</th>
+                        <td class="py-1 px-2 border text-right border text-right "><a
+                                href="/schools/{{ team.school.url_slug }}/{{ team.year }}"
+                                class="font-medium text-blue-600 hover:text-blue-800">{{ team.year }}</a></td>
+                        <td class="py-1 px-2 border text-right ">{{ team.stats.wins }}</td>
+                        <td class="py-1 px-2 border text-right ">{{ team.stats.losses }}</td>
+                        <td class="py-1 px-2 border text-right ">{{ team.stats.ties }}</td>
+                        <td class="py-1 px-2 border text-right ">{{ team.stats.win_percentage }}</td>
+                        <td class="py-1 px-2 border text-center">{{ team.stats.bcs_rank if team.stats.bcs_rank != 0 else
+                            '' }}</td>
+                        <td class="py-1 px-2 border text-center">{{ team.stats.media_rank if team.stats.media_rank <= 25
+                                else '' }}</td>
+                        <td class="py-1 px-2 border text-center">{{ team.stats.coaches_rank if team.stats.coaches_rank
+                            <= 25 else '' }}</td>
+                        <td class="py-1 px-2 border text-left">{{ team.coach.first_name }} {{ team.coach.last_name }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
     </div>
 </div>
 {% endblock %}

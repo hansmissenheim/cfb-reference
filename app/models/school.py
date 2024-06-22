@@ -110,6 +110,17 @@ class TeamStats(SQLModel, table=True):
 
     team: Team = Relationship(back_populates="stats")
 
+    @property
+    def win_percentage(self):
+        if self.wins == 0:
+            percentage = 0
+        else:
+            percentage = self.wins / (self.wins + self.losses + self.ties)
+        if percentage == 1:
+            return "1.000"
+        else:
+            return f"{percentage:.3f}".lstrip("0")
+
 
 class Coach(SQLModel, table=True):
     id: int = Field(alias="CCID", primary_key=True)

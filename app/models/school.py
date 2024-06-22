@@ -62,7 +62,7 @@ class TeamStats(SQLModel, table=True):
     ties: int = Field(alias="TSTI")
     streak: int = Field(alias="TSCS")
     avg_attendance: int = Field(alias="TMAA")
-    bcs_rack: int = Field(alias="TBRK")
+    bcs_rank: int = Field(alias="TBRK")
     bcs_rank_prev: int = Field(alias="TBPR")
     media_rank: int = Field(alias="TMRK")
     media_rank_prev: int = Field(alias="TMPP")

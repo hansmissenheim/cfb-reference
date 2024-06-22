@@ -148,7 +148,7 @@ class DataLoader:
     def load_games(self):
         for row in self.save_data["SCHD"]:
             row["date"] = game_datetime(
-                year=row["SESI"],
+                year=self.data_year,
                 week=row["SEWN"],
                 day=row["GDAT"],
                 time=row["GTOD"],

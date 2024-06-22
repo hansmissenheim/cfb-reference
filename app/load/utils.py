@@ -28,7 +28,7 @@ def generate_game_url_slug(date: datetime, team: Team | None) -> str | None:
 
 
 def game_datetime(year: int, week: int, day: int, time: int) -> datetime:
-    schedule_start = datetime(2013 + year, 8, 19)
+    schedule_start = datetime(year, 8, 19)
     start_monday = (
         schedule_start - timedelta(days=schedule_start.weekday()) + timedelta(days=7)
     )

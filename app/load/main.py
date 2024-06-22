@@ -161,13 +161,8 @@ class DataLoader:
                 .where(Game.date == game_in.date)
             ).one_or_none()
 
-            home_team = self.session.exec(
-                select(Team).where(Team.school_id == row["GHTG"])
-            ).one_or_none()
-            away_team = self.session.exec(
-                select(Team).where(Team.school_id == row["GATG"])
-            ).one_or_none()
-
+            home_team = self.get_team(row["GHTG"])
+            away_team = self.get_team(row["GATG"])
             game_in.url_slug = generate_game_url_slug(game_in.date, home_team)
 
             if game:

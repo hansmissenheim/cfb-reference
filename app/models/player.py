@@ -130,7 +130,7 @@ class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
         return f"{percentage * 100:.1f}"
 
     @property
-    def yards_per_attempt(self):
+    def yards_per_pass_attempt(self):
         if self.pass_attempts == 0:
             percentage = 0.0
         else:
@@ -158,6 +158,14 @@ class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
                 - 200 * self.interceptions
                 + 100 * (self.completions / (self.pass_attempts))
             ) / (self.pass_attempts)
+        return f"{percentage:.1f}"
+
+    @property
+    def yards_per_rush_attempt(self):
+        if self.rush_attempts == 0:
+            percentage = 0.0
+        else:
+            percentage = self.rush_yards / (self.rush_attempts)
         return f"{percentage:.1f}"
 
 

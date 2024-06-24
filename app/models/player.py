@@ -121,6 +121,45 @@ class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
     player: Player = Relationship(back_populates="stats_offense")
     school: "School" = Relationship()
 
+    @property
+    def completion_percentage(self):
+        if self.pass_attempts == 0:
+            percentage = 0.0
+        else:
+            percentage = self.completions / (self.pass_attempts)
+        return f"{percentage * 100:.1f}"
+
+    @property
+    def yards_per_attempt(self):
+        if self.pass_attempts == 0:
+            percentage = 0.0
+        else:
+            percentage = self.pass_yards / (self.pass_attempts)
+        return f"{percentage:.1f}"
+
+    @property
+    def adjusted_yards_per_attempt(self):
+        if self.pass_attempts == 0:
+            percentage = 0.0
+        else:
+            percentage = (
+                self.pass_yards + 20 * self.pass_tds - 45 * self.interceptions
+            ) / (self.pass_attempts)
+        return f"{percentage:.1f}"
+
+    @property
+    def passer_rating(self):
+        if self.pass_attempts == 0:
+            percentage = 0.0
+        else:
+            percentage = (
+                8.4 * self.pass_yards
+                + 330 * self.pass_tds
+                - 200 * self.interceptions
+                + 100 * (self.completions / (self.pass_attempts))
+            ) / (self.pass_attempts)
+        return f"{percentage:.1f}"
+
 
 class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)

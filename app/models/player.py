@@ -296,3 +296,15 @@ class PlayerSeasonReturnStats(PlayerSeasonStats, table=True):
 
     player: Player = Relationship(back_populates="stats_return")
     school: "School" = Relationship()
+
+    @property
+    def kick_return_average(self):
+        if self.kick_returns == 0:
+            return 0.0
+        return round(self.kick_return_yards / self.kick_returns, 1)
+
+    @property
+    def punt_return_average(self):
+        if self.punt_returns == 0:
+            return 0.0
+        return round(self.punt_return_yards / self.punt_returns, 1)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -84,11 +84,16 @@ class PlayerAttributes(SQLModel, table=True):
     player: Player = Relationship(back_populates="attributes")
 
 
-class PlayerSeasonOffenseStats(SQLModel, table=True):
+class PlayerSeasonStats(SQLModel):
+    position_id: int = Field(alias="PPOS")
+    class_id: int = Field(alias="PYEA")
+    year: int = Field(alias="year")
+
+
+class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int | None = Field(alias="school", foreign_key="school.id")
-    year: int = Field(alias="year")
+    school_id: int = Field(alias="TGID", foreign_key="school.id")
     games_played: int = Field(alias="sgmp")
     completions: int = Field(alias="sacm")
     pass_attempts: int = Field(alias="saat")
@@ -116,11 +121,10 @@ class PlayerSeasonOffenseStats(SQLModel, table=True):
     school: "School" = Relationship()
 
 
-class PlayerSeasonDefenseStats(SQLModel, table=True):
+class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int | None = Field(alias="school", foreign_key="school.id")
-    year: int = Field(alias="year")
+    school_id: int = Field(alias="TGID", foreign_key="school.id")
     games_played: int = Field(alias="sgmp")
     solo_tackles: int = Field(alias="sdta")
     assisted_tackles: int = Field(alias="sdht")
@@ -141,11 +145,10 @@ class PlayerSeasonDefenseStats(SQLModel, table=True):
     school: "School" = Relationship()
 
 
-class PlayerSeasonBlockingStats(SQLModel, table=True):
+class PlayerSeasonBlockingStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int | None = Field(alias="school", foreign_key="school.id")
-    year: int = Field(alias="year")
+    school_id: int = Field(alias="TGID", foreign_key="school.id")
     games_played: int = Field(alias="sgmp")
     pancakes: int = Field(alias="sopa")
     sacks_allowed: int = Field(alias="sosa")
@@ -154,11 +157,10 @@ class PlayerSeasonBlockingStats(SQLModel, table=True):
     school: "School" = Relationship()
 
 
-class PlayerSeasonKickingStats(SQLModel, table=True):
+class PlayerSeasonKickingStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int | None = Field(alias="school", foreign_key="school.id")
-    year: int = Field(alias="year")
+    school_id: int = Field(alias="TGID", foreign_key="school.id")
     games_played: int = Field(alias="sgmp")
     fg_made: int = Field(alias="skfm")
     fg_attempts: int = Field(alias="skfa")
@@ -180,7 +182,7 @@ class PlayerSeasonKickingStats(SQLModel, table=True):
     punts: int = Field(alias="spat")
     punt_yards: int = Field(alias="spya")
     net_punt_yards: int = Field(alias="spny")
-    punt_blocks: int = Field(alias="spat")
+    punt_blocks: int = Field(alias="spbl")
     punts_in_20: int = Field(alias="sppt")
     punt_touchbacks: int = Field(alias="sptb")
     longest_punt: int = Field(alias="splN")
@@ -189,11 +191,10 @@ class PlayerSeasonKickingStats(SQLModel, table=True):
     school: "School" = Relationship()
 
 
-class PlayerSeasonReturnStats(SQLModel, table=True):
+class PlayerSeasonReturnStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int | None = Field(alias="school", foreign_key="school.id")
-    year: int = Field(alias="year")
+    school_id: int = Field(alias="TGID", foreign_key="school.id")
     games_played: int = Field(alias="sgmp")
     kick_returns: int = Field(alias="srka")
     kick_return_yards: int = Field(alias="srky")

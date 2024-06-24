@@ -81,7 +81,7 @@ class DataLoader:
                     school_id=school_id, year=self.data_year, stats=team_in_stats
                 )
             else:
-                update_dict = team_in_stats.model_dump(exclude={"id"})
+                update_dict = team_in_stats.model_dump(exclude={"id", "team_id"})
                 team.stats.sqlmodel_update(update_dict)
 
             self.session.add(team)

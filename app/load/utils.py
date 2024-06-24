@@ -49,3 +49,18 @@ def merge_tables(key: str, table_1: list[dict], table_2: list[dict]) -> list[dic
             result.append(row)
 
     return result
+
+
+def get_all_player_stats(save_data: dict[str, list[dict]]) -> dict[str, dict]:
+    player_offense = save_data["PSOF"]
+    player_defense = save_data["PSDE"]
+    player_blocking = save_data["PSOL"]
+    player_kicking = save_data["PSKI"]
+    player_return = save_data["PSKP"]
+
+    player_dicts = merge_tables("PGID", player_offense, player_defense)
+    player_dicts = merge_tables("PGID", player_dicts, player_blocking)
+    player_dicts = merge_tables("PGID", player_dicts, player_kicking)
+    player_dicts = merge_tables("PGID", player_dicts, player_return)
+
+    return {player_dict["PGID"]: player_dict for player_dict in player_dicts}

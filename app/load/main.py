@@ -9,16 +9,38 @@ from app.load.utils import (
     generate_game_url_slug,
     generate_player_url_slug,
     generate_url_slug,
+    get_all_player_stats,
     merge_tables,
 )
 from app.models.game import Game
 from app.models.links import TeamGameLink
-from app.models.player import Player, PlayerAttributes
+from app.models.player import (
+    Player,
+    PlayerAttributes,
+    PlayerSeasonBlockingStats,
+    PlayerSeasonDefenseStats,
+    PlayerSeasonKickingStats,
+    PlayerSeasonOffenseStats,
+    PlayerSeasonReturnStats,
+)
 from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamStats
 
 
 class DataLoader:
-    TABLES = ["COCH", "PLAY", "SCHD", "SEAI", "STAD", "TEAM", "TSSE"]
+    TABLES = [
+        "COCH",
+        "PLAY",
+        "PSDE",
+        "PSOF",
+        "PSOL",
+        "PSKI",
+        "PSKP",
+        "SCHD",
+        "SEAI",
+        "STAD",
+        "TEAM",
+        "TSSE",
+    ]
     data_year = 2013
 
     save_data: dict[str, list[dict]]
@@ -112,9 +134,24 @@ class DataLoader:
         self.session.commit()
 
     def load_players(self):
+        player_stats_dict = get_all_player_stats(self.save_data)
+
         for player_dict in self.save_data["PLAY"]:
             player_dict["attributes"] = PlayerAttributes(**player_dict)
             player_in = Player(**player_dict)
+            stats_in = player_stats_dict.get(player_dict["PGID"], {})
+            stats_in["school_id"] = player_dict["TGID"]
+            stats_in["year"] = self.data_year
+            if "sacm" in stats_in:
+                player_in.stats_offense.append(PlayerSeasonOffenseStats(**stats_in))
+            if "sdta" in stats_in:
+                player_in.stats_defense.append(PlayerSeasonDefenseStats(**stats_in))
+            if "sopa" in stats_in:
+                player_in.stats_blocking.append(PlayerSeasonBlockingStats(**stats_in))
+            if "skfm" in stats_in:
+                player_in.stats_kicking.append(PlayerSeasonKickingStats(**stats_in))
+            if "srka" in stats_in:
+                player_in.stats_return.append(PlayerSeasonReturnStats(**stats_in))
 
             player = self.session.exec(
                 select(Player)

@@ -175,9 +175,58 @@
     </div>
     {% endif %}
     {% endif %}
+    {% if player.stats_defense|length > 0 %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Defensive Stats</h1>
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">Defense Stats</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Year</th>
+                    <th class="py-1 px-2 text-left border">School</th>
+                    <th class="py-1 px-2 text-right border">G</th>
+                    <th class="py-1 px-2 text-right border">Solo</th>
+                    <th class="py-1 px-2 text-right border">Ast</th>
+                    <th class="py-1 px-2 text-right border">Tot</th>
+                    <th class="py-1 px-2 text-right border">Loss</th>
+                    <th class="py-1 px-2 text-right border">Sk</th>
+                    <th class="py-1 px-2 text-right border">Int</th>
+                    <th class="py-1 px-2 text-right border">Yds</th>
+                    <th class="py-1 px-2 text-right border">Avg</th>
+                    <th class="py-1 px-2 text-right border">PD</th>
+                    <th class="py-1 px-2 text-right border">FR</th>
+                    <th class="py-1 px-2 text-right border">Yds</th>
+                    <th class="py-1 px-2 text-right border">FF</th>
+                    <th class="py-1 px-2 text-right border">TD</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stats in player.stats_defense|sort(attribute="year") %}
+                <tr class="border border-blue-gray-200">
+                    <td class="py-1 px-2 border text-right"><a
+                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                        hover:text-blue-800">{{ stats.year }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.solo_tackles }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.assisted_tackles }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.solo_tackles + stats.assisted_tackles }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.tackles_for_loss }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.sacks }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.interceptions }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.intercepton_yards }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.interception_average }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.pass_deflections }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.fumbles_recovered }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.fumble_yards }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.forced_fumbles }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.tds }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% endif %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Offensive Line Stats</h1>
     </div>

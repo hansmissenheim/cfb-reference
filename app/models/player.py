@@ -205,6 +205,12 @@ class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     def sacks(self) -> float:
         return self.full_sacks + (0.5 * self.half_sacks)
 
+    @property
+    def interception_average(self) -> float:
+        if self.interceptions == 0:
+            return 0.0
+        return round(self.intercepton_yards / self.interceptions, 1)
+
 
 class PlayerSeasonBlockingStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -85,9 +85,10 @@ class PlayerAttributes(SQLModel, table=True):
 
 
 class PlayerSeasonOffenseStats(SQLModel, table=True):
-    player_id: int | None = Field(
-        default=None, foreign_key="player.id", primary_key=True
-    )
+    id: int | None = Field(default=None, primary_key=True)
+    player_id: int | None = Field(default=None, foreign_key="player.id")
+    school_id: int | None = Field(alias="school", foreign_key="school.id")
+    year: int = Field(alias="year")
     games_played: int = Field(alias="sgmp")
     completions: int = Field(alias="sacm")
     pass_attempts: int = Field(alias="saat")
@@ -112,12 +113,14 @@ class PlayerSeasonOffenseStats(SQLModel, table=True):
     drops: int = Field(alias="scdr")
 
     player: Player = Relationship(back_populates="stats_offense")
+    school: "School" = Relationship()
 
 
 class PlayerSeasonDefenseStats(SQLModel, table=True):
-    player_id: int | None = Field(
-        default=None, foreign_key="player.id", primary_key=True
-    )
+    id: int | None = Field(default=None, primary_key=True)
+    player_id: int | None = Field(default=None, foreign_key="player.id")
+    school_id: int | None = Field(alias="school", foreign_key="school.id")
+    year: int = Field(alias="year")
     games_played: int = Field(alias="sgmp")
     solo_tackles: int = Field(alias="sdta")
     assisted_tackles: int = Field(alias="sdht")
@@ -135,23 +138,27 @@ class PlayerSeasonDefenseStats(SQLModel, table=True):
     tds: int = Field(alias="ssit")
 
     player: Player = Relationship(back_populates="stats_defense")
+    school: "School" = Relationship()
 
 
 class PlayerSeasonBlockingStats(SQLModel, table=True):
-    player_id: int | None = Field(
-        default=None, foreign_key="player.id", primary_key=True
-    )
+    id: int | None = Field(default=None, primary_key=True)
+    player_id: int | None = Field(default=None, foreign_key="player.id")
+    school_id: int | None = Field(alias="school", foreign_key="school.id")
+    year: int = Field(alias="year")
     games_played: int = Field(alias="sgmp")
     pancakes: int = Field(alias="sopa")
     sacks_allowed: int = Field(alias="sosa")
 
     player: Player = Relationship(back_populates="stats_blocking")
+    school: "School" = Relationship()
 
 
 class PlayerSeasonKickingStats(SQLModel, table=True):
-    player_id: int | None = Field(
-        default=None, foreign_key="player.id", primary_key=True
-    )
+    id: int | None = Field(default=None, primary_key=True)
+    player_id: int | None = Field(default=None, foreign_key="player.id")
+    school_id: int | None = Field(alias="school", foreign_key="school.id")
+    year: int = Field(alias="year")
     games_played: int = Field(alias="sgmp")
     fg_made: int = Field(alias="skfm")
     fg_attempts: int = Field(alias="skfa")
@@ -179,12 +186,14 @@ class PlayerSeasonKickingStats(SQLModel, table=True):
     longest_punt: int = Field(alias="splN")
 
     player: Player = Relationship(back_populates="stats_kicking")
+    school: "School" = Relationship()
 
 
 class PlayerSeasonReturnStats(SQLModel, table=True):
-    player_id: int | None = Field(
-        default=None, foreign_key="player.id", primary_key=True
-    )
+    id: int | None = Field(default=None, primary_key=True)
+    player_id: int | None = Field(default=None, foreign_key="player.id")
+    school_id: int | None = Field(alias="school", foreign_key="school.id")
+    year: int = Field(alias="year")
     games_played: int = Field(alias="sgmp")
     kick_returns: int = Field(alias="srka")
     kick_return_yards: int = Field(alias="srky")
@@ -196,3 +205,4 @@ class PlayerSeasonReturnStats(SQLModel, table=True):
     longest_punt_return: int = Field(alias="srpL")
 
     player: Player = Relationship(back_populates="stats_return")
+    school: "School" = Relationship()

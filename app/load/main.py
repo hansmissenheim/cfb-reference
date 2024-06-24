@@ -140,7 +140,6 @@ class DataLoader:
             player_dict["attributes"] = PlayerAttributes(**player_dict)
             player_in = Player(**player_dict)
             stats_in = player_stats_dict.get(player_dict["PGID"], {})
-            stats_in["school_id"] = player_dict["TGID"]
             stats_in["year"] = self.data_year
             if "sacm" in stats_in:
                 player_in.stats_offense.append(PlayerSeasonOffenseStats(**stats_in))

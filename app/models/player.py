@@ -129,7 +129,8 @@ class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     solo_tackles: int = Field(alias="sdta")
     assisted_tackles: int = Field(alias="sdht")
     tackles_for_loss: int = Field(alias="sdtl")
-    sacks: float
+    full_sacks: int = Field(alias="slsk")
+    half_sacks: int = Field(alias="slhs")
     interceptions: int = Field(alias="ssin")
     intercepton_yards: int = Field(alias="ssiy")
     longest_interception: int = Field(alias="sslR")
@@ -143,6 +144,10 @@ class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
 
     player: Player = Relationship(back_populates="stats_defense")
     school: "School" = Relationship()
+
+    @property
+    def sacks(self) -> float:
+        return self.full_sacks + (0.5 * self.half_sacks)
 
 
 class PlayerSeasonBlockingStats(PlayerSeasonStats, table=True):

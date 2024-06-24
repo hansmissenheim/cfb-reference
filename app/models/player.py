@@ -43,6 +43,9 @@ class Player(SQLModel, table=True):
     stats_kicking: list["PlayerSeasonKickingStats"] = Relationship(
         back_populates="player"
     )
+    stats_return: list["PlayerSeasonReturnStats"] = Relationship(
+        back_populates="player"
+    )
 
     @property
     def hometown(self) -> str:
@@ -176,3 +179,20 @@ class PlayerSeasonKickingStats(SQLModel, table=True):
     longest_punt: int = Field(alias="splN")
 
     player: Player = Relationship(back_populates="stats_kicking")
+
+
+class PlayerSeasonReturnStats(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    games_played: int = Field(alias="sgmp")
+    kick_returns: int = Field(alias="srka")
+    kick_return_yards: int = Field(alias="srky")
+    kick_return_tds: int = Field(alias="srkt")
+    longest_kick_return: int = Field(alias="srkL")
+    punt_returns: int = Field(alias="srpa")
+    punt_return_yards: int = Field(alias="srpy")
+    punt_return_tds: int = Field(alias="srpt")
+    longest_punt_return: int = Field(alias="srpL")
+
+    player: Player = Relationship(back_populates="stats_return")

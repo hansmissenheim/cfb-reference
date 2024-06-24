@@ -13,7 +13,7 @@ from app.load.utils import (
     merge_tables,
 )
 from app.models.game import Game
-from app.models.links import TeamGameLink
+from app.models.links import PlayerTeamLink, TeamGameLink
 from app.models.player import (
     Player,
     PlayerAttributes,
@@ -49,7 +49,10 @@ class DataLoader:
     def __init__(self, save_file: BinaryIO, session: Session):
         ncaa_db_file = ncaadb.read_db(save_file)
         self.save_data = {
-            table: ncaa_db_file[table].to_dict(orient="records")
+            table: ncaa_db_file[table]
+            .reset_index()
+            .rename(columns={"index": f"{table}_index"})
+            .to_dict(orient="records")
             for table in self.TABLES
         }
         self.data_year += int(self.save_data["SEAI"][0]["SSYE"])
@@ -134,24 +137,9 @@ class DataLoader:
         self.session.commit()
 
     def load_players(self):
-        player_stats_dict = get_all_player_stats(self.save_data)
-
         for player_dict in self.save_data["PLAY"]:
             player_dict["attributes"] = PlayerAttributes(**player_dict)
             player_in = Player(**player_dict)
-            stats_in = player_stats_dict.get(player_dict["PGID"], {})
-            stats_in["year"] = self.data_year
-            if "sacm" in stats_in:
-                player_in.stats_offense.append(PlayerSeasonOffenseStats(**stats_in))
-            if "sdta" in stats_in:
-                player_in.stats_defense.append(PlayerSeasonDefenseStats(**stats_in))
-            if "sopa" in stats_in:
-                player_in.stats_blocking.append(PlayerSeasonBlockingStats(**stats_in))
-            if "skfm" in stats_in:
-                player_in.stats_kicking.append(PlayerSeasonKickingStats(**stats_in))
-            if "srka" in stats_in:
-                player_in.stats_return.append(PlayerSeasonReturnStats(**stats_in))
-
             player = self.session.exec(
                 select(Player)
                 .join(PlayerAttributes, PlayerAttributes.player_id == Player.id)  # type: ignore
@@ -179,6 +167,90 @@ class DataLoader:
                 if team.school is not None and team.school not in player.schools:
                     player.schools.append(team.school)
 
+        self.session.commit()
+
+    def load_player_stats(self):
+        players = self.session.exec(
+            select(Player)
+            .join(PlayerTeamLink, Player.id == PlayerTeamLink.player_id)
+            .join(Team, Team.id == PlayerTeamLink.team_id)
+            .where(Team.year == self.data_year)
+        ).all()
+        players_dict = {player.game_id: player for player in players}
+        player_stats_dicts = get_all_player_stats(self.save_data)
+
+        for player_stats_dict in player_stats_dicts:
+            if player := players_dict.get(player_stats_dict["PGID"]):
+                if ea_id := player_stats_dict.get("PSOF_index"):
+                    new = True
+                    stats_in = PlayerSeasonOffenseStats(
+                        **player_stats_dict,
+                        ea_id=ea_id,
+                        year=self.data_year,
+                    )
+                    for stats in player.stats_offense:
+                        if stats.ea_id == stats_in.ea_id:
+                            new = False
+                            break
+                    if new:
+                        player.stats_offense.append(stats_in)
+
+                if ea_id := player_stats_dict.get("PSDE_index"):
+                    new = True
+                    stats_in = PlayerSeasonDefenseStats(
+                        **player_stats_dict,
+                        ea_id=ea_id,
+                        year=self.data_year,
+                    )
+                    for stats in player.stats_defense:
+                        if stats.ea_id == stats_in.ea_id:
+                            new = False
+                            break
+                    if new:
+                        player.stats_defense.append(stats_in)
+
+                if ea_id := player_stats_dict.get("PSOL_index"):
+                    new = True
+                    stats_in = PlayerSeasonBlockingStats(
+                        **player_stats_dict,
+                        ea_id=ea_id,
+                        year=self.data_year,
+                    )
+                    for stats in player.stats_blocking:
+                        if stats.ea_id == stats_in.ea_id:
+                            new = False
+                            break
+                    if new:
+                        player.stats_blocking.append(stats_in)
+
+                if ea_id := player_stats_dict.get("PSKI_index"):
+                    new = True
+                    stats_in = PlayerSeasonKickingStats(
+                        **player_stats_dict,
+                        ea_id=ea_id,
+                        year=self.data_year,
+                    )
+                    for stats in player.stats_kicking:
+                        if stats.ea_id == stats_in.ea_id:
+                            new = False
+                            break
+                    if new:
+                        player.stats_kicking.append(stats_in)
+
+                if ea_id := player_stats_dict.get("PSKP_index"):
+                    new = True
+                    stats_in = PlayerSeasonReturnStats(
+                        **player_stats_dict,
+                        ea_id=ea_id,
+                        year=self.data_year,
+                    )
+                    for stats in player.stats_return:
+                        if stats.ea_id == stats_in.ea_id:
+                            new = False
+                            break
+                    if new:
+                        player.stats_return.append(stats_in)
+        self.session.add_all(players_dict.values())
         self.session.commit()
 
     def load_games(self):
@@ -228,5 +300,6 @@ def load_save(save_file: BinaryIO, session: Session) -> None:
     loader.load_stadiums()
     loader.load_schools()
     loader.load_players()
+    loader.load_player_stats()
     loader.load_coaches()
     loader.load_games()

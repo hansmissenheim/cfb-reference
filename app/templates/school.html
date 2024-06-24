@@ -51,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for team in school.teams|reverse %}
+                    {% for team in school.teams|sort(attribute="year", reverse=True) %}
                     <tr class="border border-blue-gray-200">
                         <th class="py-1 px-2 border text-right">{{ loop.index }}</th>
                         <td class="py-1 px-2 border text-right border text-right "><a

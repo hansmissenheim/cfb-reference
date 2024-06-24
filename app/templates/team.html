@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for game_link in team.game_links|reverse %}
+                {% for game_link in team.game_links|sort(attribute="game.date") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right">{{ loop.index }}</th>
                     <td class="py-1 px-2 border text-left">

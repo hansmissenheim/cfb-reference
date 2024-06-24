@@ -257,6 +257,28 @@ class PlayerSeasonKickingStats(PlayerSeasonStats, table=True):
     player: Player = Relationship(back_populates="stats_kicking")
     school: "School" = Relationship()
 
+    @property
+    def points(self):
+        return self.fg_made * 3 + self.xp_made
+
+    @property
+    def fg_percentage(self):
+        if self.fg_attempts == 0:
+            return 0.0
+        return round(self.fg_made / self.fg_attempts, 3) * 100
+
+    @property
+    def xp_percentage(self):
+        if self.xp_attempts == 0:
+            return 0.0
+        return round(self.xp_made / self.xp_attempts, 3) * 100
+
+    @property
+    def punt_average(self):
+        if self.punts == 0:
+            return 0.0
+        return round(self.punt_yards / self.punts, 1)
+
 
 class PlayerSeasonReturnStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)

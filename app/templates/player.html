@@ -257,9 +257,52 @@
         </table>
     </div>
     {% endif %}
+    {% if player.stats_kicking|length > 0 %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Kicking Stats</h1>
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">Kicking Stats</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Year</th>
+                    <th class="py-1 px-2 text-left border">School</th>
+                    <th class="py-1 px-2 text-right border">G</th>
+                    <th class="py-1 px-2 text-right border">XPM</th>
+                    <th class="py-1 px-2 text-right border">XPA</th>
+                    <th class="py-1 px-2 text-right border">XP%</th>
+                    <th class="py-1 px-2 text-right border">FGM</th>
+                    <th class="py-1 px-2 text-right border">FGA</th>
+                    <th class="py-1 px-2 text-right border">FG%</th>
+                    <th class="py-1 px-2 text-right border">Pts</th>
+                    <th class="py-1 px-2 text-right border">Punts</th>
+                    <th class="py-1 px-2 text-right border">Yds</th>
+                    <th class="py-1 px-2 text-right border">Avg</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stats in player.stats_kicking|sort(attribute="year") %}
+                <tr class="border border-blue-gray-200">
+                    <td class="py-1 px-2 border text-right"><a
+                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                        hover:text-blue-800">{{ stats.year }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.xp_made }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.xp_attempts }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.xp_percentage }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.fg_made }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.fg_attempts }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.fg_percentage }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.points }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.punts }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.punt_yards }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.punt_average }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% endif %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Return Stats</h1>
     </div>

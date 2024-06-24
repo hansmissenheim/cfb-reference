@@ -34,6 +34,9 @@ class Player(SQLModel, table=True):
     stats_offense: list["PlayerSeasonOffenseStats"] = Relationship(
         back_populates="player"
     )
+    stats_defense: list["PlayerSeasonDefenseStats"] = Relationship(
+        back_populates="player"
+    )
 
     @property
     def hometown(self) -> str:
@@ -100,3 +103,26 @@ class PlayerSeasonOffenseStats(SQLModel, table=True):
     drops: int = Field(alias="scdr")
 
     player: Player = Relationship(back_populates="stats_offense")
+
+
+class PlayerSeasonDefenseStats(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    games_played: int = Field(alias="sgmp")
+    solo_tackles: int = Field(alias="sdta")
+    assisted_tackles: int = Field(alias="sdht")
+    tackles_for_loss: int = Field(alias="sdtl")
+    sacks: float
+    interceptions: int = Field(alias="ssin")
+    intercepton_yards: int = Field(alias="ssiy")
+    longest_interception: int = Field(alias="sslR")
+    pass_deflections: int = Field(alias="sdpd")
+    forced_fumbles: int = Field(alias="slff")
+    fumbles_recovered: int = Field(alias="slfr")
+    fumble_yards: int = Field(alias="slfy")
+    blocked_kicks: int = Field(alias="slbl")
+    safeties: int = Field(alias="slsa")
+    tds: int = Field(alias="ssit")
+
+    player: Player = Relationship(back_populates="stats_defense")

@@ -85,6 +85,7 @@ class PlayerAttributes(SQLModel, table=True):
 
 
 class PlayerSeasonStats(SQLModel):
+    ea_id: int
     position_id: int = Field(alias="PPOS")
     class_id: int = Field(alias="PYEA")
     year: int = Field(alias="year")

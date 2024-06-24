@@ -37,6 +37,9 @@ class Player(SQLModel, table=True):
     stats_defense: list["PlayerSeasonDefenseStats"] = Relationship(
         back_populates="player"
     )
+    stats_blocking: list["PlayerSeasonDefenseStats"] = Relationship(
+        back_populates="player"
+    )
 
     @property
     def hometown(self) -> str:
@@ -126,3 +129,14 @@ class PlayerSeasonDefenseStats(SQLModel, table=True):
     tds: int = Field(alias="ssit")
 
     player: Player = Relationship(back_populates="stats_defense")
+
+
+class PlayerSeasonBlockingStats(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    games_played: int = Field(alias="sgmp")
+    pancakes: int = Field(alias="sopa")
+    sacks_allowed: int = Field(alias="sosa")
+
+    player: Player = Relationship(back_populates="stats_blocking")

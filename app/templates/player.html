@@ -227,9 +227,36 @@
         </table>
     </div>
     {% endif %}
+    {% if player.stats_blocking|length > 0 %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Offensive Line Stats</h1>
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">Blocking Stats</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Year</th>
+                    <th class="py-1 px-2 text-left border">School</th>
+                    <th class="py-1 px-2 text-right border">G</th>
+                    <th class="py-1 px-2 text-right border">Pck</th>
+                    <th class="py-1 px-2 text-right border">Sck</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stats in player.stats_blocking|sort(attribute="year") %}
+                <tr class="border border-blue-gray-200">
+                    <td class="py-1 px-2 border text-right"><a
+                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                        hover:text-blue-800">{{ stats.year }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.pancakes }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.sacks_allowed }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% endif %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Kicking Stats</h1>
     </div>

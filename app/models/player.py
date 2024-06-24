@@ -31,6 +31,9 @@ class Player(SQLModel, table=True):
     teams: list["Team"] = Relationship(
         back_populates="players", link_model=PlayerTeamLink
     )
+    stats_offense: list["PlayerSeasonOffenseStats"] = Relationship(
+        back_populates="player"
+    )
 
     @property
     def hometown(self) -> str:
@@ -67,3 +70,33 @@ class PlayerAttributes(SQLModel, table=True):
     PLSY: int
 
     player: Player = Relationship(back_populates="attributes")
+
+
+class PlayerSeasonOffenseStats(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    games_played: int = Field(alias="sgmp")
+    completions: int = Field(alias="sacm")
+    pass_attempts: int = Field(alias="saat")
+    pass_yards: int = Field(alias="saya")
+    pass_tds: int = Field(alias="satd")
+    interceptions: int = Field(alias="sain")
+    longest_pass: int = Field(alias="salN")
+    sacks: int = Field(alias="sasa")
+    rush_attempts: int = Field(alias="suat")
+    rush_yards: int = Field(alias="suya")
+    rush_tds: int = Field(alias="sutd")
+    longest_rush: int = Field(alias="sulN")
+    yards_after_contact: int = Field(alias="suyh")
+    twenty_yard_runs: int = Field(alias="su2y")
+    broken_tackles: int = Field(alias="subt")
+    fumbles: int = Field(alias="sufu")
+    receptions: int = Field(alias="scca")
+    recieving_yards: int = Field(alias="scya")
+    recieving_tds: int = Field(alias="sctd")
+    longest_reception: int = Field(alias="scrL")
+    yards_after_catch: int = Field(alias="scyc")
+    drops: int = Field(alias="scdr")
+
+    player: Player = Relationship(back_populates="stats_offense")

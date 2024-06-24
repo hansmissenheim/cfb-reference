@@ -13,6 +13,67 @@
         </div>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">{{ team.year }} {{ team.school.name }} Schedule</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">G</th>
+                    <th class="py-1 px-2 text-center border">Date</th>
+                    <th class="py-1 px-2 text-center border">Time</th>
+                    <th class="py-1 px-2 text-center border">Day</th>
+                    <th class="py-1 px-2 text-center border">School</th>
+                    <th class="py-1 px-2 border"></th>
+                    <th class="py-1 px-2 text-center border">Opponent</th>
+                    <th class="py-1 px-2 border"></th>
+                    <th class="py-1 px-2 text-right border">Pts</th>
+                    <th class="py-1 px-2 text-right border">Opp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game_link in team.game_links|reverse %}
+                <tr class="border border-blue-gray-200">
+                    <td class="py-1 px-2 border text-right">{{ loop.index }}</th>
+                    <td class="py-1 px-2 border text-left">
+                        <a href="/games/{{ game_link.game.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{
+                            game_link.game.date.strftime('%b %d, %Y') }}</a>
+                    </td>
+                    <td class="py-1 px-2 border text-center">{{ game_link.game.date.strftime('%-I:%M %p') }}</td>
+                    <td class="py-1 px-2 border text-left">{{ game_link.game.date.strftime('%a') }}</td>
+                    <td class="py-1 px-2 border text-left">{{ team.school.name }}</td>
+                    <td class="py-1 px-2 border text-left">{{ "@" if not game_link.is_home else "" }}</td>
+                    <td class="py-1 px-2 border text-left">
+                        {% if game_link.game.team_links[0].team == team %}
+                        <a href="/schools/{{ game_link.game.team_links[1].team.school.url_slug }}/ {{ team.year }}"
+                            class="font-medium text-blue-600
+                            hover:text-blue-800">{{ game_link.game.team_links[1].team.school.name }}</a>
+                        {% else %}
+                        <a href="/schools/{{ game_link.game.team_links[0].team.school.url_slug }}/ {{ team.year }}"
+                            class="font-medium text-blue-600
+                            hover:text-blue-800">{{ game_link.game.team_links[0].team.school.name }}</a>
+                        {% endif %}
+                    </td>
+                    <td class="py-1 px-2 border text-left">
+                        {% if game_link.is_home and game_link.game.home_score > game_link.game.away_score %}W{% elif not
+                        game_link.is_home and game_link.game.home_score < game_link.game.away_score %}W{% else %}L{%
+                            endif %}</td>
+                            {% if game_link.is_home %}
+                    <td class="py-1 px-2 border text-left font-bold">
+                        {{ game_link.game.home_score }}</td>
+                    <td class="py-1 px-2 border text-left font-bold">
+                        {{ game_link.game.away_score }}</td>
+                    {% else %}
+                    <td class="py-1 px-2 border text-left font-bold">
+                        {{ game_link.game.away_score }}</td>
+                    <td class="py-1 px-2 border text-left font-bold">
+                        {{ game_link.game.home_score }}</td>
+                    {% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Team Stats</h1>
     </div>
 </div>

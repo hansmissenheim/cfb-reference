@@ -51,7 +51,7 @@ class DataLoader:
         self.save_data = {
             table: ncaa_db_file[table]
             .reset_index()
-            .rename(columns={"index": f"{table}_index"})
+            .rename(columns={"index": f"{table}_index", "sgmp": f"{table}_sgmp"})
             .to_dict(orient="records")
             for table in self.TABLES
         }
@@ -186,6 +186,7 @@ class DataLoader:
                     stats_in = PlayerSeasonOffenseStats(
                         **player_stats_dict,
                         ea_id=ea_id,
+                        sgmp=player_stats_dict["PSOF_sgmp"],
                         year=self.data_year,
                     )
                     for stats in player.stats_offense:
@@ -200,6 +201,7 @@ class DataLoader:
                     stats_in = PlayerSeasonDefenseStats(
                         **player_stats_dict,
                         ea_id=ea_id,
+                        sgmp=player_stats_dict["PSDE_sgmp"],
                         year=self.data_year,
                     )
                     for stats in player.stats_defense:
@@ -214,6 +216,7 @@ class DataLoader:
                     stats_in = PlayerSeasonBlockingStats(
                         **player_stats_dict,
                         ea_id=ea_id,
+                        sgmp=player_stats_dict["PSOL_sgmp"],
                         year=self.data_year,
                     )
                     for stats in player.stats_blocking:
@@ -228,6 +231,7 @@ class DataLoader:
                     stats_in = PlayerSeasonKickingStats(
                         **player_stats_dict,
                         ea_id=ea_id,
+                        sgmp=player_stats_dict["PSKI_sgmp"],
                         year=self.data_year,
                     )
                     for stats in player.stats_kicking:
@@ -242,6 +246,7 @@ class DataLoader:
                     stats_in = PlayerSeasonReturnStats(
                         **player_stats_dict,
                         ea_id=ea_id,
+                        sgmp=player_stats_dict["PSKP_sgmp"],
                         year=self.data_year,
                     )
                     for stats in player.stats_return:

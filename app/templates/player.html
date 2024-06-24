@@ -48,9 +48,53 @@
             </div>
         </div>
     </div>
+
+    {% if player.stats_offense|length > 0 %}
+    {% if player.stats_offense[0].pass_attempts > 0 %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800">Offensive Stats</h1>
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">Passing Stats</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Year</th>
+                    <th class="py-1 px-2 text-left border">School</th>
+                    <th class="py-1 px-2 text-right border">G</th>
+                    <th class="py-1 px-2 text-right border">Cmp</th>
+                    <th class="py-1 px-2 text-right border">Att</th>
+                    <th class="py-1 px-2 text-right border">Pct</th>
+                    <th class="py-1 px-2 text-right border">Yds</th>
+                    <th class="py-1 px-2 text-right border">Y/A</th>
+                    <th class="py-1 px-2 text-right border">AY/A</th>
+                    <th class="py-1 px-2 text-right border">TD</th>
+                    <th class="py-1 px-2 text-right border">Int</th>
+                    <th class="py-1 px-2 text-right border">Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stats in player.stats_offense|sort(attribute="year") %}
+                <tr class="border border-blue-gray-200">
+                    <td class="py-1 px-2 border text-right"><a
+                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                        hover:text-blue-800">{{ stats.year }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.completions }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.pass_attempts }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.completion_percentage }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.pass_yards }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.yards_per_attempt }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.adjusted_yards_per_attempt }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.pass_tds }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.interceptions }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.passer_rating }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% endif %}
+    {% endif %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Defensive Stats</h1>
     </div>

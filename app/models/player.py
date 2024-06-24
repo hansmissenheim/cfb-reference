@@ -37,7 +37,10 @@ class Player(SQLModel, table=True):
     stats_defense: list["PlayerSeasonDefenseStats"] = Relationship(
         back_populates="player"
     )
-    stats_blocking: list["PlayerSeasonDefenseStats"] = Relationship(
+    stats_blocking: list["PlayerSeasonBlockingStats"] = Relationship(
+        back_populates="player"
+    )
+    stats_kicking: list["PlayerSeasonKickingStats"] = Relationship(
         back_populates="player"
     )
 
@@ -140,3 +143,36 @@ class PlayerSeasonBlockingStats(SQLModel, table=True):
     sacks_allowed: int = Field(alias="sosa")
 
     player: Player = Relationship(back_populates="stats_blocking")
+
+
+class PlayerSeasonKickingStats(SQLModel, table=True):
+    player_id: int | None = Field(
+        default=None, foreign_key="player.id", primary_key=True
+    )
+    games_played: int = Field(alias="sgmp")
+    fg_made: int = Field(alias="skfm")
+    fg_attempts: int = Field(alias="skfa")
+    longest_fg: int = Field(alias="skfL")
+    fg_blocks: int = Field(alias="skfb")
+    xp_made: int = Field(alias="skem")
+    xp_attempts: int = Field(alias="skea")
+    xp_blocks: int = Field(alias="skeb")
+    fg_made_17_29: int = Field(alias="skmb")
+    fg_attempts_17_29: int = Field(alias="skab")
+    fg_made_30_39: int = Field(alias="skmc")
+    fg_attempts_30_39: int = Field(alias="skac")
+    fg_made_40_49: int = Field(alias="skmd")
+    fg_attempts_40_49: int = Field(alias="skad")
+    fg_made_50: int = Field(alias="skme")
+    fg_attempts_50: int = Field(alias="skae")
+    kickoffs: int = Field(alias="sknk")
+    touchbacks: int = Field(alias="sktb")
+    punts: int = Field(alias="spat")
+    punt_yards: int = Field(alias="spya")
+    net_punt_yards: int = Field(alias="spny")
+    punt_blocks: int = Field(alias="spat")
+    punts_in_20: int = Field(alias="sppt")
+    punt_touchbacks: int = Field(alias="sptb")
+    longest_punt: int = Field(alias="splN")
+
+    player: Player = Relationship(back_populates="stats_kicking")

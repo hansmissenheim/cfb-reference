@@ -168,6 +168,14 @@ class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
             percentage = self.rush_yards / (self.rush_attempts)
         return f"{percentage:.1f}"
 
+    @property
+    def yards_per_reception(self):
+        if self.receptions == 0:
+            percentage = 0.0
+        else:
+            percentage = self.recieving_yards / self.receptions
+        return f"{percentage:.1f}"
+
 
 class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)

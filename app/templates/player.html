@@ -136,6 +136,44 @@
         </table>
     </div>
     {% endif %}
+    {% if player.stats_offense[0].receptions > 0 %}
+    <div class="w-full p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="pl-1 pb-4 text-2xl font-bold text-gray-800">Recieving Stats</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Year</th>
+                    <th class="py-1 px-2 text-left border">School</th>
+                    <th class="py-1 px-2 text-right border">G</th>
+                    <th class="py-1 px-2 text-right border">Rec</th>
+                    <th class="py-1 px-2 text-right border">Yds</th>
+                    <th class="py-1 px-2 text-right border">Avg</th>
+                    <th class="py-1 px-2 text-right border">TD</th>
+                    <th class="py-1 px-2 text-right border">YAC</th>
+                    <th class="py-1 px-2 text-right border">Drop</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stats in player.stats_offense|sort(attribute="year") %}
+                <tr class="border border-blue-gray-200">
+                    <td class="py-1 px-2 border text-right"><a
+                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                        hover:text-blue-800">{{ stats.year }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.receptions }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.recieving_yards }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.yards_per_reception }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.recieving_tds }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.yards_after_catch }}</th>
+                    <td class="py-1 px-2 border text-right">{{ stats.drops }}</th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
     {% endif %}
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">Defensive Stats</h1>

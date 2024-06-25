@@ -12,10 +12,12 @@ from app.models.player import (
     PlayerSeasonReturnStats,
 )
 from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamStats
+from app.models.utils import Media
 
 __all__ = [
     "Coach",
     "Game",
+    "Media",
     "Player",
     "PlayerAttributes",
     "PlayerSchoolLink",

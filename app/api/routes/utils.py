@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.database import SessionDep
 from app.load.main import load_save
 from app.models import (
+    Media,
     Player,
     PlayerAttributes,
     PlayerSeasonOffenseStats,
@@ -68,6 +69,10 @@ def index(request: Request, session: SessionDep):
         .limit(25)
     )
 
+    media = session.exec(
+        select(Media).group_by(Media.school_id).order_by(desc(Media.week)).limit(10)
+    ).all()
+
     context = {
         "request": request,
         "year": year,
@@ -77,6 +82,7 @@ def index(request: Request, session: SessionDep):
         "rushing_leaders": rushing_leaders,
         "recieving_leaders": recieving_leaders,
         "top_25": top_25,
+        "media": media,
     }
     return templates.TemplateResponse("index.html", context)
 

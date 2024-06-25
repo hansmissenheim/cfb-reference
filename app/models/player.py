@@ -76,6 +76,7 @@ class PlayerAttributes(SQLModel, table=True):
     player_id: int | None = Field(
         default=None, foreign_key="player.id", primary_key=True
     )
+    overall: int = Field(alias="POVR")
     PTEN: int
     PPOE: int
     PRNS: int

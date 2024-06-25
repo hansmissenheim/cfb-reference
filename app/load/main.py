@@ -24,11 +24,13 @@ from app.models.player import (
     PlayerSeasonReturnStats,
 )
 from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamStats
+from app.models.utils import Media
 
 
 class DataLoader:
     TABLES = [
         "COCH",
+        "MCOV",
         "PLAY",
         "PSDE",
         "PSOF",
@@ -298,6 +300,13 @@ class DataLoader:
 
         self.session.commit()
 
+    def load_media(self):
+        self.session.exec(delete(Media))
+        for row in self.save_data["MCOV"]:
+            media = Media(**row, year=self.data_year)
+            self.session.add(media)
+        self.session.commit()
+
 
 def load_save(save_file: BinaryIO, session: Session) -> None:
     loader = DataLoader(save_file, session)
@@ -308,3 +317,4 @@ def load_save(save_file: BinaryIO, session: Session) -> None:
     loader.load_player_stats()
     loader.load_coaches()
     loader.load_games()
+    loader.load_media()

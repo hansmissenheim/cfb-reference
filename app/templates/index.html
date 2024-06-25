@@ -3,12 +3,111 @@
 <div class="container mx-auto flex-col py-6 grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">College Football Players</h1>
+        <div class="flex flex-wrap justify-between gap-2">
+            {% for player in random_players %}
+            <a href="/players/{{ player.url_slug}}">
+                <img src="/static/img/faces/64/face{{ player.face_id }}.webp"
+                    title="{{player.first_name}} {{player.last_name}}">
+            </a>
+            {% endfor %}
+
+        </div>
+        <h2 class="text-xl font-bold text-gray-800 pt-6 pb-2">Trending Players</h2>
+        <p>
+            {% for player in trending_players %}
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">
+                {{player.first_name}} {{player.last_name}}</a>{% if not loop.last %}, {% endif -%}
+            {% endfor %}
+        </p>
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Passing Leaders</h2>
+        {% for player, stats in passing_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.completions }}/{{ stats.pass_attempts }} {{ "{:,}".format(stats.pass_yards) }} yds, {{
+            stats.pass_tds }} TD
+        </p>
+        {% endfor %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Rushing Leaders</h2>
+        {% for player, stats in rushing_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.rush_attempts }} att {{ "{:,}".format(stats.rush_yards) }} yds, {{
+            stats.rush_tds }} TD
+        </p>
+        {% endfor %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Receiving Leaders</h2>
+        {% for player, stats in recieving_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.receptions }} rec {{ "{:,}".format(stats.recieving_yards) }} yds, {{
+            stats.recieving_tds }} TD
+        </p>
+        {% endfor %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Pass Rushing Leaders</h2>
+        {% for player, stats in pass_rushing_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.solo_tackles + stats.assisted_tackles }} tck, {{ stats.tackles_for_loss }} tfl, {{
+            stats.sacks }} sck
+        </p>
+        {% endfor %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Coverage Leaders</h2>
+        {% for player, stats in coverage_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.pass_deflections }} pbu, {{ stats.interceptions }} int, {{stats.tds}} TD
+        </p>
+        {% endfor %}
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">College Football Teams</h1>
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Top 25 Ranked</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Rk</th>
+                    <th class="py-1 px-2 text-right border">School</th>
+                    <th class="py-1 px-2 text-right border">W</th>
+                    <th class="py-1 px-2 text-right border">L</th>
+                    <th class="py-1 px-2 text-right border">Prev</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in top_25 %}
+                <tr class="border border-blue-gray-200">
+                    <th class="py-1 px-2 border text-right">{{ loop.index }}</th>
+                    <td class="py-1 px-2 border text-right border text-right "><a
+                            href="/schools/{{ team.school.url_slug }}/{{ team.year }}"
+                            class="font-medium text-blue-600 hover:text-blue-800">{{ team.school.name }}</a></td>
+                    <td class="py-1 px-2 border text-right ">{{ team.stats.wins }}</td>
+                    <td class="py-1 px-2 border text-right ">{{ team.stats.losses }}</td>
+                    <td class="py-1 px-2 border text-right ">{{ team.stats.bcs_rank_prev }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">College Football News</h1>
+        {% for article in media %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4">{{ article.title.replace("!", "") }}</h2>
+        <p>{{ article.subtitle }}</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

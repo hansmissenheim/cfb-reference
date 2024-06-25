@@ -55,6 +55,31 @@
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">College Football Teams</h1>
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Top 25 Ranked</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="py-1 px-2 text-right border">Rk</th>
+                    <th class="py-1 px-2 text-right border">School</th>
+                    <th class="py-1 px-2 text-right border">W</th>
+                    <th class="py-1 px-2 text-right border">L</th>
+                    <th class="py-1 px-2 text-right border">Prev</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in top_25 %}
+                <tr class="border border-blue-gray-200">
+                    <th class="py-1 px-2 border text-right">{{ loop.index }}</th>
+                    <td class="py-1 px-2 border text-right border text-right "><a
+                            href="/schools/{{ team.school.url_slug }}/{{ team.year }}"
+                            class="font-medium text-blue-600 hover:text-blue-800">{{ team.school.name }}</a></td>
+                    <td class="py-1 px-2 border text-right ">{{ team.stats.wins }}</td>
+                    <td class="py-1 px-2 border text-right ">{{ team.stats.losses }}</td>
+                    <td class="py-1 px-2 border text-right ">{{ team.stats.bcs_rank_prev }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">College Football News</h1>

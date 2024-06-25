@@ -4,12 +4,19 @@ from fastapi import APIRouter, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.sql import func
-from sqlmodel import desc, or_, select
+from sqlmodel import asc, desc, or_, select
 
 from app.core.config import settings
 from app.database import SessionDep
 from app.load.main import load_save
-from app.models import Player, PlayerAttributes, PlayerSeasonOffenseStats, School, Team
+from app.models import (
+    Player,
+    PlayerAttributes,
+    PlayerSeasonOffenseStats,
+    School,
+    Team,
+    TeamStats,
+)
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
@@ -35,7 +42,6 @@ def index(request: Request, session: SessionDep):
         .order_by(desc(PlayerSeasonOffenseStats.pass_yards))
         .limit(3)
     ).all()
-
     rushing_leaders = session.exec(
         select(Player, PlayerSeasonOffenseStats)
         .join(PlayerSeasonOffenseStats)
@@ -44,7 +50,6 @@ def index(request: Request, session: SessionDep):
         .order_by(desc(PlayerSeasonOffenseStats.rush_yards))
         .limit(3)
     ).all()
-
     recieving_leaders = session.exec(
         select(Player, PlayerSeasonOffenseStats)
         .join(PlayerSeasonOffenseStats)
@@ -54,14 +59,24 @@ def index(request: Request, session: SessionDep):
         .limit(3)
     ).all()
 
+    top_25 = session.exec(
+        select(Team)
+        .join(TeamStats)
+        .where(Team.year == year)
+        .where(TeamStats.bcs_rank > 0)
+        .order_by(asc(TeamStats.bcs_rank))
+        .limit(25)
+    )
+
     context = {
         "request": request,
+        "year": year,
         "random_players": random_players,
         "trending_players": trending_players,
         "passing_leaders": passing_leaders,
         "rushing_leaders": rushing_leaders,
         "recieving_leaders": recieving_leaders,
-        "year": year,
+        "top_25": top_25,
     }
     return templates.TemplateResponse("index.html", context)
 

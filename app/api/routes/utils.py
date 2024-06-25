@@ -9,7 +9,7 @@ from sqlmodel import desc, or_, select
 from app.core.config import settings
 from app.database import SessionDep
 from app.load.main import load_save
-from app.models import Player, PlayerAttributes, School
+from app.models import Player, PlayerAttributes, PlayerSeasonOffenseStats, School, Team
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
@@ -26,10 +26,42 @@ def index(request: Request, session: SessionDep):
         .order_by(desc(PlayerAttributes.overall))
         .limit(10)
     ).all()
+    year = session.exec(select(func.max(Team.year))).one()
+
+    passing_leaders = session.exec(
+        select(Player, PlayerSeasonOffenseStats)
+        .join(PlayerSeasonOffenseStats)
+        .where(PlayerSeasonOffenseStats.year == year)
+        .order_by(desc(PlayerSeasonOffenseStats.pass_yards))
+        .limit(3)
+    ).all()
+
+    rushing_leaders = session.exec(
+        select(Player, PlayerSeasonOffenseStats)
+        .join(PlayerSeasonOffenseStats)
+        .where(PlayerSeasonOffenseStats.year == year)
+        .where(PlayerSeasonOffenseStats.rush_yards < 16000)
+        .order_by(desc(PlayerSeasonOffenseStats.rush_yards))
+        .limit(3)
+    ).all()
+
+    recieving_leaders = session.exec(
+        select(Player, PlayerSeasonOffenseStats)
+        .join(PlayerSeasonOffenseStats)
+        .where(PlayerSeasonOffenseStats.year == year)
+        .where(PlayerSeasonOffenseStats.recieving_yards < 16000)
+        .order_by(desc(PlayerSeasonOffenseStats.recieving_yards))
+        .limit(3)
+    ).all()
+
     context = {
         "request": request,
         "random_players": random_players,
         "trending_players": trending_players,
+        "passing_leaders": passing_leaders,
+        "rushing_leaders": rushing_leaders,
+        "recieving_leaders": recieving_leaders,
+        "year": year,
     }
     return templates.TemplateResponse("index.html", context)
 

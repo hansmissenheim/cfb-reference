@@ -28,9 +28,41 @@ def generate_game_url_slug(date: datetime, team: Team | None) -> str | None:
 
 
 def game_datetime(year: int, week: int, day: int, time: int) -> datetime:
-    schedule_start = datetime(2013 + year, 8, 19)
+    schedule_start = datetime(year, 8, 19)
     start_monday = (
         schedule_start - timedelta(days=schedule_start.weekday()) + timedelta(days=7)
     )
     target_time = start_monday + timedelta(weeks=week, days=day, minutes=time)
     return target_time
+
+
+def merge_tables(key: str, table_1: list[dict], table_2: list[dict]) -> list[dict]:
+    lookup = {row[key]: row for row in table_2}
+    result = []
+    for row in table_1:
+        if row[key] in lookup:
+            row.update(lookup[row[key]])
+        result.append(row)
+
+    for row in table_2:
+        if row[key] not in {r[key] for r in table_1}:
+            result.append(row)
+
+    return result
+
+
+def get_all_player_stats(save_data: dict[str, list[dict]]) -> list[dict[str, dict]]:
+    player_info = save_data["PLAY"]
+    player_offense = save_data["PSOF"]
+    player_defense = save_data["PSDE"]
+    player_blocking = save_data["PSOL"]
+    player_kicking = save_data["PSKI"]
+    player_return = save_data["PSKP"]
+
+    player_dicts = merge_tables("PGID", player_offense, player_defense)
+    player_dicts = merge_tables("PGID", player_dicts, player_blocking)
+    player_dicts = merge_tables("PGID", player_dicts, player_kicking)
+    player_dicts = merge_tables("PGID", player_dicts, player_return)
+    player_dicts = merge_tables("PGID", player_dicts, player_info)
+
+    return player_dicts

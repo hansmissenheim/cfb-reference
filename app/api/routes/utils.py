@@ -4,12 +4,12 @@ from fastapi import APIRouter, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.sql import func
-from sqlmodel import or_, select
+from sqlmodel import desc, or_, select
 
 from app.core.config import settings
 from app.database import SessionDep
 from app.load.main import load_save
-from app.models import Player, School
+from app.models import Player, PlayerAttributes, School
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
@@ -20,9 +20,16 @@ def index(request: Request, session: SessionDep):
     random_players = session.exec(
         select(Player).order_by(func.random()).limit(12)
     ).all()
+    trending_players = session.exec(
+        select(Player)
+        .join(PlayerAttributes)
+        .order_by(desc(PlayerAttributes.overall))
+        .limit(10)
+    ).all()
     context = {
         "request": request,
         "random_players": random_players,
+        "trending_players": trending_players,
     }
     return templates.TemplateResponse("index.html", context)
 

@@ -10,6 +10,13 @@
                     title="{{player.first_name}} {{player.last_name}}">
             </a>
             {% endfor %}
+            <h2 class="text-xl font-bold text-gray-800 pt-4">Trending Players</h1>
+                <p>
+                    {% for player in trending_players %}
+                    <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">
+                        {{player.first_name}} {{player.last_name}}</a>{% if not loop.last %}, {% endif -%}
+                    {% endfor %}
+                </p>
         </div>
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">

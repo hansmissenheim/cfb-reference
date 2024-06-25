@@ -52,6 +52,27 @@
             stats.recieving_tds }} TD
         </p>
         {% endfor %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Pass Rushing Leaders</h2>
+        {% for player, stats in pass_rushing_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.solo_tackles + stats.assisted_tackles }} tck, {{ stats.tackles_for_loss }} tfl, {{
+            stats.sacks }} sck
+        </p>
+        {% endfor %}
+        <h2 class="text-xl font-bold text-gray-800 pt-4 pb-2">{{ year }} Coverage Leaders</h2>
+        {% for player, stats in coverage_leaders %}
+        <p>
+            <a href="/players/{{ player.url_slug}}" class="font-medium text-blue-600 hover:text-blue-800">{{
+                player.first_name }} {{ player.last_name }}</a> (<a
+                href="/schools/{{ player.schools[0].url_slug}}/ {{ year }}"
+                class="font-medium text-blue-600 hover:text-blue-800">{{ player.schools[0].name }}</a>) -
+            {{ stats.pass_deflections }} pbu, {{ stats.interceptions }} int, {{stats.tds}} TD
+        </p>
+        {% endfor %}
     </div>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-gray-800">College Football Teams</h1>

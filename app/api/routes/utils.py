@@ -18,6 +18,7 @@ from app.models import (
     Team,
     TeamStats,
 )
+from app.models.player import PlayerSeasonDefenseStats
 
 router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
@@ -59,6 +60,20 @@ def index(request: Request, session: SessionDep):
         .order_by(desc(PlayerSeasonOffenseStats.recieving_yards))
         .limit(3)
     ).all()
+    pass_rushing_leaders = session.exec(
+        select(Player, PlayerSeasonDefenseStats)
+        .join(PlayerSeasonDefenseStats)
+        .where(PlayerSeasonDefenseStats.year == year)
+        .order_by(desc(PlayerSeasonDefenseStats.full_sacks))
+        .limit(3)
+    ).all()
+    coverage_leaders = session.exec(
+        select(Player, PlayerSeasonDefenseStats)
+        .join(PlayerSeasonDefenseStats)
+        .where(PlayerSeasonDefenseStats.year == year)
+        .order_by(desc(PlayerSeasonDefenseStats.interceptions))
+        .limit(3)
+    ).all()
 
     top_25 = session.exec(
         select(Team)
@@ -81,6 +96,8 @@ def index(request: Request, session: SessionDep):
         "passing_leaders": passing_leaders,
         "rushing_leaders": rushing_leaders,
         "recieving_leaders": recieving_leaders,
+        "pass_rushing_leaders": pass_rushing_leaders,
+        "coverage_leaders": coverage_leaders,
         "top_25": top_25,
         "media": media,
     }

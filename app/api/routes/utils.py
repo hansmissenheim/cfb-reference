@@ -85,7 +85,12 @@ def index(request: Request, session: SessionDep):
     )
 
     media = session.exec(
-        select(Media).group_by(Media.school_id).order_by(desc(Media.week)).limit(10)
+        select(Media)
+        .where(Media.year == year)
+        .group_by(Media.school_id)
+        .order_by(desc(Media.week))
+        .order_by(asc(Media.game_ea_id))
+        .limit(10)
     ).all()
 
     context = {

@@ -2,7 +2,15 @@ from sqlmodel import SQLModel  # noqa
 
 from app.models.game import Game
 from app.models.links import PlayerSchoolLink, PlayerTeamLink, TeamGameLink
-from app.models.player import Player, PlayerAttributes
+from app.models.player import (
+    Player,
+    PlayerAttributes,
+    PlayerSeasonBlockingStats,
+    PlayerSeasonDefenseStats,
+    PlayerSeasonKickingStats,
+    PlayerSeasonOffenseStats,
+    PlayerSeasonReturnStats,
+)
 from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamStats
 
 __all__ = [
@@ -11,6 +19,11 @@ __all__ = [
     "Player",
     "PlayerAttributes",
     "PlayerSchoolLink",
+    "PlayerSeasonBlockingStats",
+    "PlayerSeasonDefenseStats",
+    "PlayerSeasonKickingStats",
+    "PlayerSeasonOffenseStats",
+    "PlayerSeasonReturnStats",
     "PlayerTeamLink",
     "School",
     "SchoolStats",

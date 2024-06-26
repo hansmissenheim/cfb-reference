@@ -8,7 +8,7 @@ from app.models import SQLModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-DB_PATH = str(settings.APP_DIR.parent.resolve())
+DB_PATH = str(settings.DB_PATH.resolve())
 config = context.config
 config.set_main_option("sqlalchemy.url", f"sqlite:///{DB_PATH}/database.db")
 

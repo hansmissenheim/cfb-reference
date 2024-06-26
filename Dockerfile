@@ -15,10 +15,8 @@ COPY ./alembic.ini /app/
 
 COPY ./app /app/app
 
-RUN alembic upgrade head
-
 EXPOSE 80
 
-VOLUME /app
+VOLUME /app/db
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

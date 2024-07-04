@@ -23,7 +23,7 @@ from app.models.player import (
     PlayerSeasonOffenseStats,
     PlayerSeasonReturnStats,
 )
-from app.models.school import Coach, School, SchoolStats, Stadium, Team, TeamStats
+from app.models.school import Coach, School, SchoolStats, Team, TeamStats
 from app.models.utils import Media
 
 
@@ -39,7 +39,6 @@ class DataLoader:
         "PSKP",
         "SCHD",
         "SEAI",
-        "STAD",
         "TEAM",
         "TSSE",
     ]
@@ -66,20 +65,6 @@ class DataLoader:
             .where(Team.school_id == school_id)
             .where(Team.year == self.data_year)
         ).one_or_none()
-
-    def load_stadiums(self):
-        for stadium_dict in self.save_data["STAD"]:
-            stadium_in = Stadium(**stadium_dict)
-
-            stadium = self.session.get(Stadium, stadium_dict["SGID"])
-            if stadium:
-                update_dict = stadium_in.model_dump()
-                stadium.sqlmodel_update(update_dict)
-                self.session.add(stadium)
-            else:
-                self.session.add(stadium_in)
-
-        self.session.commit()
 
     def load_schools(self):
         team_info = self.save_data["TEAM"]
@@ -311,7 +296,6 @@ class DataLoader:
 def load_save(save_file: BinaryIO, session: Session) -> None:
     loader = DataLoader(save_file, session)
 
-    loader.load_stadiums()
     loader.load_schools()
     loader.load_players()
     loader.load_player_stats()

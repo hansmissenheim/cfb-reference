@@ -3,7 +3,9 @@ from typing import BinaryIO
 import ncaadb
 from sqlmodel import Session
 
-LOADERS = []
+from app.loading.misc import StadiumLoader
+
+LOADERS = [StadiumLoader]
 
 
 class LoaderManager:
@@ -16,4 +18,6 @@ class LoaderManager:
             loader_class.load()
 
 
-def load_save_file(save_file: BinaryIO, session: Session) -> None: ...
+def load_save_file(save_file: BinaryIO, session: Session) -> None:
+    loader = LoaderManager(save_file, session)
+    loader.load_all()

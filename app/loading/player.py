@@ -2,7 +2,29 @@ from sqlmodel import Session, func, select
 
 from app.loading.school import all_teams_dict
 from app.loading.utils import BaseLoader, generate_url_slug
-from app.models import Player, PlayerAttributes
+from app.models import (
+    Player,
+    PlayerAttributes,
+    PlayerSeasonBlockingStats,
+    PlayerSeasonDefenseStats,
+    PlayerSeasonKickingStats,
+    PlayerSeasonOffenseStats,
+    PlayerSeasonReturnStats,
+    PlayerTeamLink,
+    Team,
+)
+
+PLAYER_STATS_CONFIG = [
+    {"model": PlayerSeasonOffenseStats, "attribute": "stats_offense", "table": "PSOF"},
+    {"model": PlayerSeasonDefenseStats, "attribute": "stats_defense", "table": "PSDE"},
+    {
+        "model": PlayerSeasonBlockingStats,
+        "attribute": "stats_blocking",
+        "table": "PSOL",
+    },
+    {"model": PlayerSeasonKickingStats, "attribute": "stats_kicking", "table": "PSKI"},
+    {"model": PlayerSeasonReturnStats, "attribute": "stats_return", "table": "PSKP"},
+]
 
 
 class PlayerLoader(BaseLoader):
@@ -71,6 +93,39 @@ class PlayerLoader(BaseLoader):
                 player.schools.append(team.school)
 
 
+class PlayerStatsLoader(BaseLoader):
+    def __init__(self, save_data, year: int, session: Session):
+        super().__init__(save_data, year, session)
+        self.players = all_players_by_year_dict(year, session)
+
+    def load(self):
+        for stat_config in PLAYER_STATS_CONFIG:
+            for row in self.save_data[stat_config["table"]]:
+                self.process_player_stat(row, stat_config)
+        self.session.commit()
+
+    def process_player_stat(self, row, stat_config):
+        player_with_team = self.players.get(row["PGID"])
+        if player_with_team is None:
+            return
+
+        team_id = player_with_team["team_id"]
+        player = player_with_team["player"]
+        stats_in = stat_config["model"](**row, team_id=team_id, year=self.year)
+
+        new = True
+        for stats in getattr(player, stat_config["attribute"], []):
+            if stats.ea_id == stats_in.ea_id:
+                new = False
+                break
+        if new:
+            stats = getattr(player, stat_config["attribute"], [])
+            stats.append(stats_in)
+            setattr(player, stat_config["attribute"], stats)
+
+        self.session.add(player)
+
+
 def all_players_dict(session: Session):
     players = session.exec(select(Player)).all()
     return {
@@ -82,4 +137,17 @@ def all_players_dict(session: Session):
             player.attributes.PLSY,
         ): player
         for player in players
+    }
+
+
+def all_players_by_year_dict(year: int, session: Session):
+    players_with_teams = session.exec(
+        select(Player, Team.id)
+        .join(PlayerTeamLink, Player.id == PlayerTeamLink.player_id)  # type: ignore
+        .join(Team, Team.id == PlayerTeamLink.team_id)  # type: ignore
+        .where(Team.year == year)
+    ).all()
+    return {
+        player.ea_id: {"player": player, "team_id": team_id}
+        for player, team_id in players_with_teams
     }

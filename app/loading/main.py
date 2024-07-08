@@ -6,15 +6,30 @@ from sqlmodel import Session
 
 from app.loading.game import GameLoader
 from app.loading.misc import CoachLoader, MediaLoader, StadiumLoader
-from app.loading.player import PlayerLoader
+from app.loading.player import PlayerLoader, PlayerStatsLoader
 from app.loading.school import SchoolLoader
 
 BASE_YEAR = 2013
-TABLES = ["COCH", "MCOV", "PLAY", "SCHD", "SEAI", "STAD", "TEAM", "TSSE"]
+TABLES = [
+    "COCH",
+    "MCOV",
+    "PLAY",
+    "PSDE",
+    "PSOF",
+    "PSOL",
+    "PSKI",
+    "PSKP",
+    "SCHD",
+    "SEAI",
+    "STAD",
+    "TEAM",
+    "TSSE",
+]
 LOADERS = [
     StadiumLoader,
     SchoolLoader,
     PlayerLoader,
+    PlayerStatsLoader,
     CoachLoader,
     GameLoader,
     MediaLoader,

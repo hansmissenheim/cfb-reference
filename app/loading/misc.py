@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 
 from app.loading.school import all_teams_dict
 from app.loading.utils import BaseLoader
-from app.models import Coach, Stadium
+from app.models import Coach, Media, Stadium
 
 
 class StadiumLoader(BaseLoader):
@@ -61,6 +61,30 @@ class CoachLoader(BaseLoader):
                 coach.teams.append(team)
 
 
+class MediaLoader(BaseLoader):
+    def __init__(self, save_data, year: int, session: Session):
+        super().__init__(save_data, year, session)
+        self.media = all_media_dict(session)
+
+    def load(self):
+        for row in self.save_data["MCOV"]:
+            self.process_media(row)
+        self.session.commit()
+
+    def process_media(self, row):
+        media_in = Media(**row, year=self.year)
+        media = self.update_or_create_media(media_in)
+        self.session.add(media)
+
+    def update_or_create_media(self, media_in):
+        if media := self.media.get((media_in.game_ea_id, self.year)):
+            update_dict = media_in.model_dump(exclude={"id"})
+            media.sqlmodel_update(update_dict)
+        else:
+            media = media_in
+        return media
+
+
 def all_stadiums_dict(session: Session):
     stadiums = session.exec(select(Stadium)).all()
     return {stadium.id: stadium for stadium in stadiums}
@@ -69,3 +93,8 @@ def all_stadiums_dict(session: Session):
 def all_coaches_dict(session: Session):
     coaches = session.exec(select(Coach)).all()
     return {coach.id: coach for coach in coaches}
+
+
+def all_media_dict(session: Session):
+    medias = session.exec(select(Media)).all()
+    return {(media.game_ea_id, media.year): media for media in medias}

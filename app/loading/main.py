@@ -31,7 +31,10 @@ class LoaderManager:
         self, save_file: BinaryIO
     ) -> dict[str, list[dict[Hashable, Any]]]:
         db_file = ncaadb.read_db(save_file)
-        data = {table: db_file[table].to_dict(orient="records") for table in TABLES}
+        data = {
+            table: db_file[table].reset_index().to_dict(orient="records")
+            for table in TABLES
+        }
         data["TEAM"] = (
             pd.merge(db_file["TEAM"], db_file["TSSE"], on="TGID", how="left")
             .convert_dtypes()

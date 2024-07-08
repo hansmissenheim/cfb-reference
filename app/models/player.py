@@ -87,16 +87,15 @@ class PlayerAttributes(SQLModel, table=True):
 
 
 class PlayerSeasonStats(SQLModel):
-    ea_id: int
-    position_id: int = Field(alias="PPOS")
-    class_id: int = Field(alias="PYEA")
+    ea_id: int = Field(alias="index")
+    games_played: int = Field(alias="sgmp")
     year: int = Field(alias="year")
 
 
 class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int = Field(alias="TGID", foreign_key="school.id")
+    team_id: int = Field(foreign_key="team.id")
     games_played: int = Field(alias="sgmp")
     completions: int = Field(alias="sacm")
     pass_attempts: int = Field(alias="saat")
@@ -121,7 +120,7 @@ class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
     drops: int = Field(alias="scdr")
 
     player: Player = Relationship(back_populates="stats_offense")
-    school: "School" = Relationship()
+    team: "Team" = Relationship()
 
     @property
     def completion_percentage(self):
@@ -182,7 +181,7 @@ class PlayerSeasonOffenseStats(PlayerSeasonStats, table=True):
 class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int = Field(alias="TGID", foreign_key="school.id")
+    team_id: int = Field(foreign_key="team.id")
     games_played: int = Field(alias="sgmp")
     solo_tackles: int = Field(alias="sdta")
     assisted_tackles: int = Field(alias="sdht")
@@ -201,7 +200,7 @@ class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
     tds: int = Field(alias="ssit")
 
     player: Player = Relationship(back_populates="stats_defense")
-    school: "School" = Relationship()
+    team: "Team" = Relationship()
 
     @property
     def sacks(self) -> float:
@@ -217,19 +216,19 @@ class PlayerSeasonDefenseStats(PlayerSeasonStats, table=True):
 class PlayerSeasonBlockingStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int = Field(alias="TGID", foreign_key="school.id")
+    team_id: int = Field(foreign_key="team.id")
     games_played: int = Field(alias="sgmp")
     pancakes: int = Field(alias="sopa")
     sacks_allowed: int = Field(alias="sosa")
 
     player: Player = Relationship(back_populates="stats_blocking")
-    school: "School" = Relationship()
+    team: "Team" = Relationship()
 
 
 class PlayerSeasonKickingStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int = Field(alias="TGID", foreign_key="school.id")
+    team_id: int = Field(foreign_key="team.id")
     games_played: int = Field(alias="sgmp")
     fg_made: int = Field(alias="skfm")
     fg_attempts: int = Field(alias="skfa")
@@ -257,7 +256,7 @@ class PlayerSeasonKickingStats(PlayerSeasonStats, table=True):
     longest_punt: int = Field(alias="splN")
 
     player: Player = Relationship(back_populates="stats_kicking")
-    school: "School" = Relationship()
+    team: "Team" = Relationship()
 
     @property
     def points(self):
@@ -285,7 +284,7 @@ class PlayerSeasonKickingStats(PlayerSeasonStats, table=True):
 class PlayerSeasonReturnStats(PlayerSeasonStats, table=True):
     id: int | None = Field(default=None, primary_key=True)
     player_id: int | None = Field(default=None, foreign_key="player.id")
-    school_id: int = Field(alias="TGID", foreign_key="school.id")
+    team_id: int = Field(foreign_key="team.id")
     games_played: int = Field(alias="sgmp")
     kick_returns: int = Field(alias="srka")
     kick_return_yards: int = Field(alias="srky")
@@ -297,7 +296,7 @@ class PlayerSeasonReturnStats(PlayerSeasonStats, table=True):
     longest_punt_return: int = Field(alias="srpL")
 
     player: Player = Relationship(back_populates="stats_return")
-    school: "School" = Relationship()
+    team: "Team" = Relationship()
 
     @property
     def kick_return_average(self):

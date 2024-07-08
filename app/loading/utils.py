@@ -4,9 +4,10 @@ from sqlmodel import Session
 
 
 class BaseLoader:
-    def __init__(self, save_data, session: Session):
+    def __init__(self, save_data, year: int, session: Session):
         self.save_data = save_data
         self.session = session
+        self.year = year
 
     def load(self):
         raise NotImplementedError

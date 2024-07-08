@@ -5,8 +5,8 @@ from app.models import School, SchoolStats
 
 
 class SchoolLoader(BaseLoader):
-    def __init__(self, save_data, session: Session):
-        super().__init__(save_data, session)
+    def __init__(self, save_data, year: int, session: Session):
+        super().__init__(save_data, year, session)
         self.schools = all_schools_dict(session)
 
     def load(self):

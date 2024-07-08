@@ -4,12 +4,13 @@ import ncaadb
 import pandas as pd
 from sqlmodel import Session
 
+from app.loading.game import GameLoader
 from app.loading.misc import CoachLoader, MediaLoader, StadiumLoader
 from app.loading.school import SchoolLoader
 
 BASE_YEAR = 2013
-TABLES = ["COCH", "MCOV", "SEAI", "STAD", "TEAM", "TSSE"]
-LOADERS = [StadiumLoader, SchoolLoader, CoachLoader, MediaLoader]
+TABLES = ["COCH", "MCOV", "SCHD", "SEAI", "STAD", "TEAM", "TSSE"]
+LOADERS = [StadiumLoader, SchoolLoader, CoachLoader, GameLoader, MediaLoader]
 
 
 class LoaderManager:

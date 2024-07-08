@@ -4,9 +4,10 @@ import ncaadb
 from sqlmodel import Session
 
 from app.loading.misc import StadiumLoader
+from app.loading.school import SchoolLoader
 
-TABLES = ["STAD"]
-LOADERS = [StadiumLoader]
+TABLES = ["STAD", "TEAM"]
+LOADERS = [StadiumLoader, SchoolLoader]
 
 
 class LoaderManager:

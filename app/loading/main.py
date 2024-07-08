@@ -6,11 +6,19 @@ from sqlmodel import Session
 
 from app.loading.game import GameLoader
 from app.loading.misc import CoachLoader, MediaLoader, StadiumLoader
+from app.loading.player import PlayerLoader
 from app.loading.school import SchoolLoader
 
 BASE_YEAR = 2013
-TABLES = ["COCH", "MCOV", "SCHD", "SEAI", "STAD", "TEAM", "TSSE"]
-LOADERS = [StadiumLoader, SchoolLoader, CoachLoader, GameLoader, MediaLoader]
+TABLES = ["COCH", "MCOV", "PLAY", "SCHD", "SEAI", "STAD", "TEAM", "TSSE"]
+LOADERS = [
+    StadiumLoader,
+    SchoolLoader,
+    PlayerLoader,
+    CoachLoader,
+    GameLoader,
+    MediaLoader,
+]
 
 
 class LoaderManager:

@@ -1,7 +1,8 @@
 from sqlmodel import Session, select
 
+from app.loading.school import all_teams_dict
 from app.loading.utils import BaseLoader
-from app.models import Stadium
+from app.models import Coach, Stadium
 
 
 class StadiumLoader(BaseLoader):
@@ -28,6 +29,43 @@ class StadiumLoader(BaseLoader):
         return stadium
 
 
+class CoachLoader(BaseLoader):
+    def __init__(self, save_data, year: int, session: Session):
+        super().__init__(save_data, year, session)
+        self.coaches = all_coaches_dict(session)
+        self.teams = all_teams_dict(session)
+
+    def load(self):
+        for row in self.save_data["COCH"]:
+            self.process_coach(row)
+        self.session.commit()
+
+    def process_coach(self, row):
+        coach_in = Coach(**row)
+        coach = self.update_or_create_coach(coach_in)
+        self.add_team_to_coach(coach, row["TGID"])
+        self.session.add(coach)
+
+    def update_or_create_coach(self, coach_in):
+        if coach := self.coaches.get(coach_in.id):
+            update_dict = coach_in.model_dump()
+            coach.sqlmodel_update(update_dict)
+        else:
+            coach = coach_in
+        return coach
+
+    def add_team_to_coach(self, coach, school_id):
+        team = self.teams.get((school_id, self.year))
+        if team and team not in coach.teams:
+            if team not in coach.teams:
+                coach.teams.append(team)
+
+
 def all_stadiums_dict(session: Session):
     stadiums = session.exec(select(Stadium)).all()
     return {stadium.id: stadium for stadium in stadiums}
+
+
+def all_coaches_dict(session: Session):
+    coaches = session.exec(select(Coach)).all()
+    return {coach.id: coach for coach in coaches}

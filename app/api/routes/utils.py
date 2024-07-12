@@ -8,7 +8,7 @@ from sqlmodel import asc, desc, or_, select
 
 from app.core.config import settings
 from app.database import SessionDep
-from app.load.main import load_save
+from app.loading.main import load_save_file
 from app.models import (
     Media,
     Player,
@@ -137,7 +137,7 @@ def get_upload_form(request: Request):
 @router.post("/upload")
 def upload_file(save_file_upload: UploadFile, session: SessionDep):
     try:
-        load_save(save_file_upload.file, session)
+        load_save_file(save_file_upload.file, session)
     except UnicodeDecodeError:
         return HTMLResponse("Invalid file format. Please upload a NCAA 14 DB file.")
     return {"status": "success"}

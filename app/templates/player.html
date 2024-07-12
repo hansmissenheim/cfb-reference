@@ -74,10 +74,10 @@
                 {% for stats in player.stats_offense|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.completions }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.pass_attempts }}</th>
@@ -117,10 +117,10 @@
                 {% for stats in player.stats_offense|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.rush_attempts }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.rush_yards }}</th>
@@ -157,10 +157,10 @@
                 {% for stats in player.stats_offense|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.receptions }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.recieving_yards }}</th>
@@ -203,10 +203,10 @@
                 {% for stats in player.stats_defense|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.solo_tackles }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.assisted_tackles }}</th>
@@ -244,10 +244,10 @@
                 {% for stats in player.stats_blocking|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.pancakes }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.sacks_allowed }}</th>
@@ -282,10 +282,10 @@
                 {% for stats in player.stats_kicking|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.xp_made }}</th>
                     <td class="py-1 px-2 border text-right">{{ stats.xp_attempts }}</th>
@@ -328,10 +328,10 @@
                 {% for stats in player.stats_return|sort(attribute="year") %}
                 <tr class="border border-blue-gray-200">
                     <td class="py-1 px-2 border text-right"><a
-                            href="/schools/{{ stats.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
+                            href="/schools/{{ stats.team.school.url_slug }}/{{ stats.year }}" class="font-medium text-blue-600
                         hover:text-blue-800">{{ stats.year }}</a></th>
-                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.school.url_slug }}" class="font-medium text-blue-600
-                            hover:text-blue-800">{{ stats.school.name }}</a></th>
+                    <td class="py-1 px-2 border text-left"><a href="/schools/{{ stats.team.school.url_slug }}" class="font-medium text-blue-600
+                            hover:text-blue-800">{{ stats.team.school.name }}</a></th>
                     <td class="py-1 px-2 border text-right">{{ stats.games_played }}</th>
                     <td class="py-1 px-2 border text-right">
                         </th>

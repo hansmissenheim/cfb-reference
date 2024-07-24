@@ -13,10 +13,16 @@ RUN poetry install --no-dev
 
 COPY ./alembic.ini /app/
 
+COPY ./prestart.sh /app/
+
 COPY ./app /app/app
 
 EXPOSE 80
 
 VOLUME /app/db
+
+RUN mkdir -p /app/db
+
+RUN /app/prestart.sh
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

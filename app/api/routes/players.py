@@ -58,7 +58,7 @@ def get_players_alphabet(
 
 
 @router.get("/{url_slug}", response_class=HTMLResponse)
-def player(request: Request, url_slug: str, session: SessionDep):
+def player_page(request: Request, url_slug: str, session: SessionDep):
     """Serve the player page with details for the specified player."""
     player = get_player(url_slug, session)
     if player is None:

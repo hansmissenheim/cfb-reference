@@ -36,9 +36,8 @@ def game_page(request: Request, url_slug: str, session: SessionDep) -> HTMLRespo
 
     home_team, away_team = get_teams_from_game(game)
     context = {
-        "request": request,
         "game": game,
         "home_team": home_team,
         "away_team": away_team,
     }
-    return templates.TemplateResponse("game.html", context)
+    return templates.TemplateResponse(request, "game.html", context)

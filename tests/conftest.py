@@ -17,7 +17,7 @@ TEST_USR_DATA = "tests/data/init.USR-DATA"
 @pytest.fixture(scope="session", autouse=True)
 def engine() -> Generator[Engine, None, None]:
     """Create and return a test database engine."""
-    engine = create_engine(TEST_DATABASE_URL, echo=True)
+    engine = create_engine(TEST_DATABASE_URL)
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)

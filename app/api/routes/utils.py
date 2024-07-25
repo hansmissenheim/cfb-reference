@@ -1,4 +1,5 @@
-from typing import Annotated
+from collections.abc import Sequence
+from typing import Annotated, Tuple
 
 from fastapi import APIRouter, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
@@ -24,94 +25,126 @@ router = APIRouter()
 templates = Jinja2Templates(settings.TEMPLATES_DIR)
 
 
-@router.get("/", response_class=HTMLResponse)
-def index(request: Request, session: SessionDep):
-    random_players = session.exec(
-        select(Player).order_by(func.random()).limit(12)
-    ).all()
-    trending_players = session.exec(
+def get_year(session: SessionDep) -> int:
+    """Get the current year from the database."""
+    return session.exec(select(func.max(Team.year))).one()
+
+
+def get_random_players(
+    session: SessionDep, limit: int | None = None
+) -> Sequence[Player]:
+    """Get a list of random players from the database."""
+    return session.exec(select(Player).order_by(func.random()).limit(limit)).all()
+
+
+def get_trending_players(
+    session: SessionDep, limit: int | None = None
+) -> Sequence[Player]:
+    """Get a list of trending players from the database."""
+    return session.exec(
         select(Player)
         .join(PlayerAttributes)
         .order_by(desc(PlayerAttributes.overall))
-        .limit(10)
+        .limit(limit)
     ).all()
-    year = session.exec(select(func.max(Team.year))).one()
 
-    passing_leaders = session.exec(
+
+def get_passing_leaders(
+    year: int, session: SessionDep, limit: int | None = None
+) -> Sequence[Tuple[Player, PlayerSeasonOffenseStats]]:
+    """Get a list of passing leaders from the database."""
+    return session.exec(
         select(Player, PlayerSeasonOffenseStats)
         .join(PlayerSeasonOffenseStats)
         .where(PlayerSeasonOffenseStats.year == year)
         .order_by(desc(PlayerSeasonOffenseStats.pass_yards))
-        .limit(3)
+        .limit(limit)
     ).all()
-    rushing_leaders = session.exec(
+
+
+def get_rushing_leaders(
+    year: int, session: SessionDep, limit: int | None = None
+) -> Sequence[Tuple[Player, PlayerSeasonOffenseStats]]:
+    """Get a list of passing leaders from the database."""
+    return session.exec(
         select(Player, PlayerSeasonOffenseStats)
         .join(PlayerSeasonOffenseStats)
         .where(PlayerSeasonOffenseStats.year == year)
-        .where(PlayerSeasonOffenseStats.rush_yards < 16000)
         .order_by(desc(PlayerSeasonOffenseStats.rush_yards))
-        .limit(3)
+        .limit(limit)
     ).all()
-    recieving_leaders = session.exec(
+
+
+def get_receiving_leaders(
+    year: int, session: SessionDep, limit: int | None = None
+) -> Sequence[Tuple[Player, PlayerSeasonOffenseStats]]:
+    """Get a list of passing leaders from the database."""
+    return session.exec(
         select(Player, PlayerSeasonOffenseStats)
         .join(PlayerSeasonOffenseStats)
         .where(PlayerSeasonOffenseStats.year == year)
-        .where(PlayerSeasonOffenseStats.recieving_yards < 16000)
         .order_by(desc(PlayerSeasonOffenseStats.recieving_yards))
-        .limit(3)
+        .limit(limit)
     ).all()
-    pass_rushing_leaders = session.exec(
+
+
+def get_pass_rushing_leaders(
+    year: int, session: SessionDep, limit: int | None = None
+) -> Sequence[Tuple[Player, PlayerSeasonDefenseStats]]:
+    """Get a list of passing leaders from the database."""
+    return session.exec(
         select(Player, PlayerSeasonDefenseStats)
         .join(PlayerSeasonDefenseStats)
         .where(PlayerSeasonDefenseStats.year == year)
         .order_by(desc(PlayerSeasonDefenseStats.full_sacks))
-        .limit(3)
+        .limit(limit)
     ).all()
-    coverage_leaders = session.exec(
+
+
+def get_coverage_leaders(
+    year: int, session: SessionDep, limit: int | None = None
+) -> Sequence[Tuple[Player, PlayerSeasonDefenseStats]]:
+    """Get a list of passing leaders from the database."""
+    return session.exec(
         select(Player, PlayerSeasonDefenseStats)
         .join(PlayerSeasonDefenseStats)
         .where(PlayerSeasonDefenseStats.year == year)
         .order_by(desc(PlayerSeasonDefenseStats.interceptions))
-        .limit(3)
+        .limit(limit)
     ).all()
 
-    top_25 = session.exec(
+
+def get_top_25_teams(year: int, session: SessionDep) -> Sequence[Team]:
+    """Get the top 25 teams from the database."""
+    return session.exec(
         select(Team)
         .join(TeamStats)
         .where(Team.year == year)
         .where(TeamStats.bcs_rank > 0)
         .order_by(asc(TeamStats.bcs_rank))
         .limit(25)
-    )
-
-    media = session.exec(
-        select(Media)
-        .where(Media.year == year)
-        .group_by(Media.school_id)
-        .order_by(desc(Media.week))
-        .order_by(asc(Media.game_ea_id))
-        .limit(10)
     ).all()
 
-    context = {
-        "request": request,
-        "year": year,
-        "random_players": random_players,
-        "trending_players": trending_players,
-        "passing_leaders": passing_leaders,
-        "rushing_leaders": rushing_leaders,
-        "recieving_leaders": recieving_leaders,
-        "pass_rushing_leaders": pass_rushing_leaders,
-        "coverage_leaders": coverage_leaders,
-        "top_25": top_25,
-        "media": media,
-    }
-    return templates.TemplateResponse("index.html", context)
+
+def get_media(
+    year: int, session: SessionDep, limit: int | None = None
+) -> Sequence[Media]:
+    """Get a list of media from the database."""
+    return session.exec(
+        select(Media)
+        .where(Media.year == year)
+        .group_by(Media.school_id)  # type: ignore
+        .order_by(desc(Media.week))
+        .order_by(asc(Media.game_ea_id))
+        .limit(limit)
+    ).all()
 
 
-@router.post("/search")
-def search(request: Request, search: Annotated[str, Form()], session: SessionDep):
-    players = session.exec(
+def get_players_from_search(
+    search: str, session: SessionDep, limit: int | None = None
+) -> Sequence[Player]:
+    """Get a list of players from the database based on a search term."""
+    return session.exec(
         select(Player)
         .where(
             or_(
@@ -119,19 +152,48 @@ def search(request: Request, search: Annotated[str, Form()], session: SessionDep
                 Player.last_name.startswith(search),
             )
         )
-        .limit(10)
+        .limit(limit)
     ).all()
-    schools = session.exec(select(School).where(School.name.startswith(search))).all()
 
+
+def get_schools_from_search(search: str, session: SessionDep) -> Sequence[School]:
+    """Get a list of schools from the database based on a search term."""
+    return session.exec(select(School).where(School.name.startswith(search))).all()
+
+
+@router.get("/", response_class=HTMLResponse)
+def index(request: Request, session: SessionDep):
+    year = get_year(session)
+    context = {
+        "year": year,
+        "random_players": get_random_players(session, limit=12),
+        "trending_players": get_trending_players(session, limit=12),
+        "passing_leaders": get_passing_leaders(year, session, limit=3),
+        "rushing_leaders": get_rushing_leaders(year, session, limit=3),
+        "recieving_leaders": get_receiving_leaders(year, session, limit=3),
+        "pass_rushing_leaders": get_pass_rushing_leaders(year, session, limit=3),
+        "coverage_leaders": get_coverage_leaders(year, session, limit=3),
+        "top_25": get_top_25_teams(year, session),
+        "media": get_media(year, session, limit=10),
+    }
+    return templates.TemplateResponse(request, "index.html", context)
+
+
+@router.post("/search", response_class=HTMLResponse)
+def search(request: Request, search: Annotated[str, Form()], session: SessionDep):
     return templates.TemplateResponse(
+        request,
         "/shared/search_results.html",
-        {"request": request, "players": players, "schools": schools},
+        {
+            "players": get_players_from_search(search, session, limit=10),
+            "schools": get_schools_from_search(search, session),
+        },
     )
 
 
 @router.get("/upload", response_class=HTMLResponse)
 def get_upload_form(request: Request):
-    return templates.TemplateResponse("upload.html", {"request": request})
+    return templates.TemplateResponse(request, "upload.html")
 
 
 @router.post("/upload")

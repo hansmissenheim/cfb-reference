@@ -1,9 +1,11 @@
 from collections.abc import Generator
 
 import pytest
+from fastapi.testclient import TestClient
 from sqlmodel import Session, create_engine
 
 from app.loading.main import load_save_file
+from app.main import app
 from app.models import SQLModel
 
 TEST_DATABASE_URL = "sqlite:///tests/data/database.db"
@@ -22,3 +24,11 @@ def db() -> Generator[Session, None, None]:
         yield session
 
     SQLModel.metadata.drop_all(engine)
+
+
+@pytest.fixture(scope="module")
+def client() -> Generator[TestClient, None, None]:
+    """Provide a test client for the FastAPI app."""
+
+    with TestClient(app) as client:
+        yield client

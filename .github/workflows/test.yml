@@ -41,7 +41,7 @@ jobs:
               run: poetry install --no-interaction --no-root
 
             - name: Test with coverage report
-              run:
+              run: |
                 source .venv/bin/activate
                 coverage run -m pytest
                 coverage report --show-missing

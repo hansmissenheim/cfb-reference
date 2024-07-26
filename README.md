@@ -8,6 +8,9 @@
 <p align="center">
   📊 Self-hosted sports statistics website using NCAA game saves.
 </p>
+<p align="center">
+<a href="https://github.com/hansmissenheim/cfb-reference/actions?query=workflow%3ATest" target="_blank"><img src="https://github.com/hansmissenheim/cfb-reference/workflows/Test/badge.svg" alt="Test"></a>
+</p>
 
 ![Preview](img/preview-homepage.png)
 

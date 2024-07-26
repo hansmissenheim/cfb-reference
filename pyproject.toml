@@ -21,6 +21,7 @@ uvicorn = { extras = ["standard"], version = "^0.30.1" }
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
 ruff = "^0.4.8"
+coverage = "^7.6.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -8,6 +8,14 @@
 <p align="center">
   📊 Self-hosted sports statistics website using NCAA game saves.
 </p>
+<p align="center">
+<a href="https://github.com/hansmissenheim/cfb-reference/actions?query=workflow%3ATest" target="_blank">
+    <img src="https://github.com/hansmissenheim/cfb-reference/workflows/Test/badge.svg" alt="Test">
+</a>
+<a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/hansmissenheim/cfb-reference" target="_blank">
+    <img src="https://coverage-badge.samuelcolvin.workers.dev/hansmissenheim/cfb-reference.svg" alt="Coverage">
+</a>
+</p>
 
 ![Preview](img/preview-homepage.png)
 

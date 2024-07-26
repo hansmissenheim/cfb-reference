@@ -42,6 +42,7 @@ jobs:
 
             - name: Test with coverage report
               run:
+                source .venv/bin/activate
                 coverage run -m pytest
                 coverage report --show-missing
                 coverage html --title "${@-coverage}"
